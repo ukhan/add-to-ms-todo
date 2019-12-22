@@ -1,0 +1,19 @@
+{
+  "manifest_version": 2,
+  "name": "__MSG_extName__",
+  "description": "__MSG_extDescription__",
+  "default_locale": "en",
+  "icons": {
+    "16": "icons/todo-16.png",
+    "48": "icons/todo-48.png",
+    "128": "icons/todo-128.png"
+  },
+  "page_action": {
+    "default_icon": {
+      "16": "icons/todo-16.png",
+      "24": "icons/todo-24.png",
+      "32": "icons/todo-32.png"
+    }
+  },
+  "permissions": []
+}
