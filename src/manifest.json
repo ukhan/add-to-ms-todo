@@ -8,12 +8,24 @@
     "48": "icons/todo-48.png",
     "128": "icons/todo-128.png"
   },
-  "page_action": {
+  "browser_action": {
     "default_icon": {
       "16": "icons/todo-16.png",
       "24": "icons/todo-24.png",
       "32": "icons/todo-32.png"
-    }
+    },
+    "default_popup": "popup.html"
   },
-  "permissions": []
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  "permissions": [
+    "identity",
+    "https://login.microsoftonline.com/*",
+    "https://outlook.office.com/*",
+    "contextMenus",
+    "storage",
+    "notifications"
+  ]
 }
