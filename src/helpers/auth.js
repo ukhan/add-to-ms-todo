@@ -194,5 +194,12 @@ export function me() {
 }
 
 export function logout() {
+  chrome.identity.launchWebAuthFlow(
+    {
+      url: `https://login.windows.net/common/oauth2/logout?postlogoutredirect_uri=${redirect_uri}`,
+      interactive: true
+    },
+    () => chrome.runtime.lastError
+  );
   storage.remove(['access_token', 'refresh_token', 'expired_at', 'name', 'email']);
 }
