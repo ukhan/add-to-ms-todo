@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { isAuthenticated, login, me, logout } from '@/helpers/auth';
+import { CheckAuthMethod, isAuthenticated, login, me, logout } from '@/helpers/auth';
 
 export default {
   name: 'UI',
@@ -29,16 +29,18 @@ export default {
     };
   },
   async created() {
-    this.isAuthenticated = await isAuthenticated();
+    this.isAuthenticated = await isAuthenticated(CheckAuthMethod.FAST);
     this.loadProfile();
   },
   methods: {
     async login() {
       const profile = await login();
 
-      this.isAuthenticated = profile.name !== '';
-      this.name = profile.name;
-      this.email = profile.email;
+      if (profile) {
+        this.isAuthenticated = profile.name !== '';
+        this.name = profile.name;
+        this.email = profile.email;
+      }
     },
     async loadProfile() {
       if (this.isAuthenticated) {
@@ -49,7 +51,7 @@ export default {
       }
     },
     async recheck() {
-      this.isAuthenticated = await isAuthenticated();
+      this.isAuthenticated = await isAuthenticated(CheckAuthMethod.FORCE);
       this.loadProfile();
     },
     logout() {

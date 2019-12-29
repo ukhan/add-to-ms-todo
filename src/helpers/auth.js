@@ -15,9 +15,34 @@ const permissions = [
 ];
 const scope = permissions.join('%20');
 
-export async function isAuthenticated() {
-  const accessToken = (await getToken()) || '';
-  return accessToken.length > 0;
+/**
+ * @enum {string}
+ */
+export const CheckAuthMethod = {
+  FAST: 'fast',
+  NORMAL: 'normal',
+  FORCE: 'force'
+};
+
+/**
+ * @param {CheckAuthMethod} method
+ */
+export async function isAuthenticated(authMethod = CheckAuthMethod.FAST) {
+  let access_token;
+
+  switch (authMethod) {
+    case CheckAuthMethod.FAST:
+      access_token = await storage.get('access_token');
+      break;
+    case CheckAuthMethod.NORMAL:
+      access_token = await getToken();
+      break;
+    case CheckAuthMethod.FORCE:
+      access_token = await getToken(true);
+      break;
+  }
+
+  return (access_token || '').length > 0;
 }
 
 export function refreshToken(refresh_token) {
@@ -40,14 +65,14 @@ function timestamp() {
   return Math.round(Date.now() / 1000);
 }
 
-export async function getToken() {
+export async function getToken(force = false) {
   const { access_token, expired_at, refresh_token } = await storage.get([
     'access_token',
     'expired_at',
     'refresh_token'
   ]);
 
-  if (isExpired(expired_at) && refresh_token) {
+  if ((isExpired(expired_at) || force) && refresh_token) {
     return await refreshToken(refresh_token);
   } else {
     return access_token || '';
@@ -63,20 +88,25 @@ export function bgRefreshToken(refresh_token) {
       },
       body: `client_id=${clientID}&scope=${scope}&refresh_token=${refresh_token}&grant_type=refresh_token&client_secret=${clientSecret}`
     })
-      .then(response => response.json())
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          reject(response.statusText);
+        }
+      })
       .then(data => {
         storage.set({
           access_token: data.access_token,
           refresh_token: data.refresh_token,
           expired_at: timestamp() + data.expires_in
         });
-
         resolve(data.access_token);
       })
-      .catch(err => {
-        logout();
-        reject(err.message);
-      });
+      .catch(err => reject(err));
+  }).catch(err => {
+    logout();
+    notification(err.message);
   });
 }
 
@@ -138,6 +168,8 @@ export function bgAuth() {
 }
 
 export function bgMe(token) {
+  if (!token) return;
+
   return new Promise((resolve, reject) => {
     fetch('https://outlook.office.com/api/v2.0/me', {
       method: 'GET',
