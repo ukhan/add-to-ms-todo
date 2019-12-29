@@ -7,8 +7,13 @@ import storage from './storage';
 const oauthURL = 'https://login.microsoftonline.com/common/oauth2/v2.0';
 const clientID = process.env.CLIENT_ID;
 const clientSecret = process.env.CLIENT_SECRET;
-const scope = 'https://outlook.office.com/tasks.readwrite';
 const redirect_uri = chrome.identity.getRedirectURL();
+const permissions = [
+  'https://outlook.office.com/user.read',
+  'https://outlook.office.com/tasks.readwrite',
+  'offline_access'
+];
+const scope = permissions.join('%20');
 
 export async function isAuthenticated() {
   const accessToken = (await getToken()) || '';
@@ -56,7 +61,7 @@ export function bgRefreshToken(refresh_token) {
       headers: {
         'Content-type': 'application/x-www-form-urlencoded'
       },
-      body: `client_id=${clientID}&scope=offline_access%20${scope}&refresh_token=${refresh_token}&grant_type=refresh_token&client_secret=${clientSecret}`
+      body: `client_id=${clientID}&scope=${scope}&refresh_token=${refresh_token}&grant_type=refresh_token&client_secret=${clientSecret}`
     })
       .then(response => response.json())
       .then(data => {
@@ -69,26 +74,26 @@ export function bgRefreshToken(refresh_token) {
         resolve(data.access_token);
       })
       .catch(err => {
-        storage.remove(['access_token', 'refresh_token', 'expired_at']);
+        logout();
         reject(err.message);
       });
   });
 }
 
-export function auth() {
+export function login() {
   return new Promise((resolve, reject) => {
-    chrome.runtime.sendMessage({ action: 'auth' }, response => {
+    chrome.runtime.sendMessage({ action: 'auth' }, profile => {
       if (chrome.runtime.lastError) {
         reject(chrome.runtime.lastError.message);
       }
-      resolve(response.token);
+      resolve(profile);
     });
   }).catch(message => notification(message));
 }
 
 export function bgAuth() {
   const state = randomstring.generate(12);
-  const authURL = `${oauthURL}/authorize?client_id=${clientID}&response_type=code&redirect_uri=${redirect_uri}&response_mode=query&scope=offline_access%20${scope}&state=${state}`;
+  const authURL = `${oauthURL}/authorize?client_id=${clientID}&response_type=code&redirect_uri=${redirect_uri}&response_mode=query&scope=${scope}&state=${state}`;
 
   return new Promise((resolve, reject) => {
     chrome.identity.launchWebAuthFlow(
@@ -127,7 +132,35 @@ export function bgAuth() {
       }
     );
   }).catch(message => {
-    storage.remove(['access_token', 'refresh_token', 'expired_at']);
+    logout();
     notification(message);
   });
+}
+
+export function bgMe(token) {
+  return new Promise((resolve, reject) => {
+    fetch('https://outlook.office.com/api/v2.0/me', {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+        const me = { name: data.DisplayName, email: data.EmailAddress };
+        storage.set(me);
+        resolve(me);
+      })
+      .catch(err => {
+        reject(err.message);
+      });
+  }).catch(message => notification(message));
+}
+
+export function me() {
+  return storage.get(['name', 'email']);
+}
+
+export function logout() {
+  storage.remove(['access_token', 'refresh_token', 'expired_at', 'name', 'email']);
 }

@@ -3,8 +3,10 @@
     <div v-if="isAuthenticated === undefined">
       Loading...
     </div>
-    <div v-else-if="isAuthenticated" class="cursor-pointer" @click="recheck">
-      Authenticated
+    <div v-else-if="isAuthenticated">
+      Authenticated {{ name }} {{ email }}:
+      <a href="#" @click="recheck">Recheck</a>
+      <a href="#" @click="logout">Logout</a>
     </div>
     <div v-else>
       <div class="cursor-pointer" @click="login">
@@ -15,25 +17,46 @@
 </template>
 
 <script>
-import { isAuthenticated, auth } from '@/helpers/auth';
+import { isAuthenticated, login, me, logout } from '@/helpers/auth';
 
 export default {
   name: 'UI',
   data() {
     return {
-      isAuthenticated: undefined
+      isAuthenticated: undefined,
+      name: '',
+      email: ''
     };
   },
   async created() {
     this.isAuthenticated = await isAuthenticated();
+    this.loadProfile();
   },
   methods: {
     async login() {
-      await auth();
-      this.isAuthenticated = await isAuthenticated();
+      const profile = await login();
+
+      this.isAuthenticated = profile.name !== '';
+      this.name = profile.name;
+      this.email = profile.email;
+    },
+    async loadProfile() {
+      if (this.isAuthenticated) {
+        const profile = await me();
+
+        this.name = profile.name;
+        this.email = profile.email;
+      }
     },
     async recheck() {
       this.isAuthenticated = await isAuthenticated();
+      this.loadProfile();
+    },
+    logout() {
+      logout();
+      this.isAuthenticated = '';
+      this.name = '';
+      this.email = '';
     }
   }
 };

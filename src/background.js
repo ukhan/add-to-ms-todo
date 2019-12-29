@@ -1,4 +1,4 @@
-import { bgAuth, bgRefreshToken } from './helpers/auth';
+import { bgAuth, bgMe, bgRefreshToken } from './helpers/auth';
 
 const OPEN_TODO_MENU = 'open-todo';
 const TODO_URL = 'https://to-do.microsoft.com/';
@@ -21,7 +21,9 @@ chrome.contextMenus.onClicked.addListener(info => {
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === 'auth') {
-    bgAuth().then(token => sendResponse({ token }));
+    bgAuth()
+      .then(token => bgMe(token))
+      .then(profile => sendResponse(profile));
     return true;
   } else if (request.action === 'refresh-token') {
     const refresh_token = request.refresh_token;
