@@ -2,7 +2,7 @@ const randomstring = require('randomstring');
 const urlParse = require('url-parse');
 
 import notification from './notification';
-import storage from './storage';
+import storage from './encrypted-storage';
 
 const oauthURL = 'https://login.microsoftonline.com/common/oauth2/v2.0';
 const clientID = process.env.CLIENT_ID;
@@ -47,12 +47,15 @@ export async function isAuthenticated(authMethod = CheckAuthMethod.FAST) {
 
 export function refreshToken(refresh_token) {
   return new Promise((resolve, reject) => {
-    chrome.runtime.sendMessage({ action: 'refresh-token', refresh_token }, response => {
-      if (chrome.runtime.lastError) {
-        reject(chrome.runtime.lastError.message);
+    chrome.runtime.sendMessage(
+      { action: 'REFRESH_TOKEN', refresh_token },
+      response => {
+        if (chrome.runtime.lastError) {
+          reject(chrome.runtime.lastError.message);
+        }
+        resolve(response.token);
       }
-      resolve(response.token);
-    });
+    );
   }).catch(message => notification(message));
 }
 
@@ -65,7 +68,13 @@ function timestamp() {
   return Math.round(Date.now() / 1000);
 }
 
-export async function getToken(force = false) {
+/**
+ * Get access token
+ *
+ * @param {Boolean} force Refresh even if not outdated
+ * @param {Boolean} direct Direct refresh without sendMessage to background
+ */
+export async function getToken(force = false, direct = false) {
   const { access_token, expired_at, refresh_token } = await storage.get([
     'access_token',
     'expired_at',
@@ -73,7 +82,11 @@ export async function getToken(force = false) {
   ]);
 
   if ((isExpired(expired_at) || force) && refresh_token) {
-    return await refreshToken(refresh_token);
+    if (direct) {
+      return await bgRefreshToken(refresh_token);
+    } else {
+      return await refreshToken(refresh_token);
+    }
   } else {
     return access_token || '';
   }
@@ -105,14 +118,20 @@ export function bgRefreshToken(refresh_token) {
       })
       .catch(err => reject(err));
   }).catch(err => {
-    logout();
+    storage.remove([
+      'access_token',
+      'refresh_token',
+      'expired_at',
+      'name',
+      'email'
+    ]);
     notification(err.message);
   });
 }
 
 export function login() {
   return new Promise((resolve, reject) => {
-    chrome.runtime.sendMessage({ action: 'auth' }, profile => {
+    chrome.runtime.sendMessage({ action: 'AUTH' }, profile => {
       if (chrome.runtime.lastError) {
         reject(chrome.runtime.lastError.message);
       }
@@ -162,7 +181,7 @@ export function bgAuth() {
       }
     );
   }).catch(message => {
-    logout();
+    authClear();
     notification(message);
   });
 }
@@ -201,5 +220,15 @@ export function logout() {
     },
     () => chrome.runtime.lastError
   );
-  storage.remove(['access_token', 'refresh_token', 'expired_at', 'name', 'email']);
+  authClear();
+}
+
+function authClear() {
+  storage.remove([
+    'access_token',
+    'refresh_token',
+    'expired_at',
+    'name',
+    'email'
+  ]);
 }

@@ -1,0 +1,231 @@
+<template>
+  <el-form label-position="top" size="small" class="add-task-form">
+    <TextareaFormItem :label="t('Title')" :rows="2" v-model="title" />
+
+    <TextareaFormItem
+      :label="t('Description')"
+      :rows="4"
+      v-model="description"
+    />
+
+    <el-form-item :label="t('List')">
+      <el-select v-model="lst" filterable>
+        <el-option
+          v-for="l in lists"
+          :key="l.id"
+          :label="l.label"
+          :value="l.id"
+        >
+        </el-option>
+      </el-select>
+    </el-form-item>
+
+    <ReminderFormItem v-model="reminderDateTime" />
+
+    <el-row :gutter="8">
+      <el-col :span="15">
+        <el-button-group>
+          <el-button
+            icon="el-icon-setting"
+            size="medium"
+            :title="t('Settings')"
+          ></el-button>
+          <el-button
+            icon="el-icon-switch-button"
+            :title="t('Logout') + ` [${profile.name}]`"
+            size="medium"
+            @click="logout"
+          ></el-button>
+        </el-button-group>
+      </el-col>
+
+      <el-col :span="9">
+        <el-button
+          class="submit-button"
+          type="primary"
+          size="medium"
+          :disabled="titleEmpty"
+          :loading="inProcess"
+          @click="save"
+        >
+          {{ t('SaveTask') }}
+        </el-button>
+      </el-col>
+    </el-row>
+  </el-form>
+</template>
+
+<style>
+.add-task-form {
+  width: 400px;
+}
+.el-form-item--small.el-form-item {
+  margin-bottom: 8px;
+}
+.el-textarea__inner {
+  font-family: inherit;
+  padding: 20px 10px 5px;
+  scroll-behavior: smooth;
+}
+.el-date-editor.el-input,
+.el-select--small,
+.submit-button {
+  width: 100%;
+}
+.el-date-editor--date .el-input__inner,
+.el-date-editor--time-select .el-input__inner,
+.el-select--small .el-input__inner {
+  height: 3.8em;
+  padding-top: 12px;
+}
+.el-select--small .el-input__inner {
+  padding-left: 10px;
+}
+.el-input__prefix,
+.el-input__suffix {
+  top: 8px;
+}
+.el-form-item--small .el-form-item__label {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  line-height: 2em;
+  font-size: 0.8em;
+  margin-left: 11px;
+  color: #909399;
+}
+.el-textarea.el-input--small:before {
+  content: '';
+  display: block;
+  height: 19px;
+  background: #fff;
+  position: absolute;
+  top: 1px;
+  left: 4px;
+  right: 18px;
+}
+.el-textarea.el-input--small:after {
+  content: '';
+  display: block;
+  height: 4px;
+  background: #fff;
+  position: absolute;
+  bottom: 1px;
+  left: 4px;
+  right: 18px;
+}
+</style>
+
+<script>
+import { logout } from '@/helpers/auth';
+import { addTask } from '@/helpers/task';
+import { t } from '@/helpers/i18n';
+import notification from '@/helpers/notification';
+import getTabInfo from '@/helpers/tab';
+
+import TextareaFormItem from './TextareaFormItem';
+import ReminderFormItem from './ReminderFormItem';
+
+export default {
+  name: 'TaskUI',
+
+  props: {
+    profile: {
+      type: Object,
+      required: true
+    },
+    lists: {
+      type: Array,
+      required: true
+    }
+  },
+
+  data() {
+    return {
+      title: '',
+      description: '',
+      list: undefined,
+      reminderDateTime: '',
+      inProcess: false,
+      config: this.$root.config
+    };
+  },
+
+  computed: {
+    titleEmpty() {
+      return !this.title.trim().length;
+    },
+    lst: {
+      get() {
+        if (!this.lists.length) return null;
+
+        if (!this.list) {
+          let lists_ids = this.lists.map(list => list.id);
+          if (lists_ids.indexOf(this.config.listDefault) === -1) {
+            let defaultList = this.lists.filter(list => list.isDefault);
+            this.config.listDefault = defaultList[0].id;
+            this.list = defaultList[0].id;
+          }
+        }
+
+        return this.list;
+      },
+
+      set(list) {
+        this.list = list;
+      }
+    }
+  },
+
+  created() {
+    getTabInfo().then(tabInfo => {
+      this.title = tabInfo.title;
+      this.description = tabInfo.selected.trim().length
+        ? `${tabInfo.selected}\n\n ${tabInfo.url}`
+        : tabInfo.url;
+    });
+  },
+
+  methods: {
+    async logout() {
+      await logout();
+      this.$emit('logout');
+    },
+
+    save() {
+      let task = {
+        title: this.title,
+        description: this.description,
+        list: this.list,
+        reminder: this.reminderDateTime
+      };
+      this.inProcess = true;
+      addTask(task)
+        .then(response => {
+          this.inProcess = false;
+          if (this.config.notifyOnSuccess) {
+            notification(this.t('SuccessNotification'), false, () => {
+              window.close();
+            });
+          }
+        })
+        .catch(res => {
+          let err =
+            this.t('ErrorNotification') +
+            ' – \n' +
+            (res.statusText || `#${res.status}`);
+
+          this.inProcess = false;
+          notification(err);
+        });
+    },
+
+    t
+  },
+
+  components: {
+    TextareaFormItem,
+    ReminderFormItem
+  }
+};
+</script>

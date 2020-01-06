@@ -10,11 +10,7 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const WebpackExtensionManifestPlugin = require('webpack-extension-manifest-plugin');
 const ZipPlugin = require('zip-webpack-plugin');
 const merge = require('webpack-merge');
-const path = require('path');
-const purgecss = require('@fullhuman/postcss-purgecss')({
-  content: ['./src/**/*.html', './src/**/*.vue'],
-  defaultExtractor: content => content.match(/[\w-/:]+(?<!:)/g) || []
-});
+const resolve = require('path').resolve;
 const webpack = require('webpack');
 
 const manifest = require('./src/manifest.json');
@@ -28,32 +24,35 @@ module.exports = (env, argv) => {
     },
     resolve: {
       alias: {
-        '@': path.join(__dirname, 'src')
-      }
+        '@': resolve(__dirname, 'src')
+      },
+      extensions: ['.js', '.vue', '.json']
     },
     module: {
       rules: [
         {
+          test: /\.js$/,
+          loader: 'babel-loader',
+          exclude: /node_modules/
+        },
+        {
           test: /\.css$/,
-          use: [
-            MiniCssExtractPlugin.loader,
-            'css-loader',
-            {
-              loader: 'postcss-loader',
-              options: {
-                ident: 'postcss',
-                plugins: [
-                  require('tailwindcss'),
-                  require('autoprefixer'),
-                  ...(argv.mode === 'production' ? [purgecss] : [])
-                ]
-              }
-            }
-          ]
+          use: ['style-loader', 'css-loader', 'postcss-loader']
         },
         {
           test: /\.vue$/,
           loader: 'vue-loader'
+        },
+        {
+          test: /\.(png|jpg|jpeg|gif|eot|ttf|woff|woff2|svg|svgz)(\?.+)?$/,
+          use: [
+            {
+              loader: 'url-loader',
+              options: {
+                limit: 10000
+              }
+            }
+          ]
         }
       ]
     },
@@ -64,7 +63,10 @@ module.exports = (env, argv) => {
         template: 'src/popup/popup.html',
         chunks: ['popup']
       }),
-      new CopyPlugin([{ from: 'src/icons', to: 'icons' }]),
+      new CopyPlugin([
+        { from: 'src/icons', to: 'icons' },
+        { from: 'src/assets', to: 'assets' }
+      ]),
       new MiniCssExtractPlugin({
         filename: '[name].css'
       }),
@@ -78,7 +80,18 @@ module.exports = (env, argv) => {
     return merge(
       {
         optimization: {
-          minimizer: [new TerserPlugin({}), new OptimizeCSSAssetsPlugin({})]
+          minimize: true,
+          minimizer: [
+            new TerserPlugin({
+              terserOptions: {
+                output: {
+                  comments: false
+                }
+              },
+              extractComments: false
+            }),
+            new OptimizeCSSAssetsPlugin({})
+          ]
         },
         plugins: [
           new CleanWebpackPlugin(),
@@ -114,8 +127,10 @@ module.exports = (env, argv) => {
               base: manifest,
               extend: {
                 version: pkg.version,
-                key: dotEnv.definitions['process.env.EXTENSION_KEY'].replace(/"/g, '')
-                //content_security_policy: "script-src 'self' 'unsafe-eval'; object-src 'self';"
+                key: dotEnv.definitions['process.env.EXTENSION_KEY'].replace(
+                  /"/g,
+                  ''
+                )
               }
             }
           })

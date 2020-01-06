@@ -1,2 +1,72 @@
 extName: Add to Microsoft To Do
-extDescription: '"Add to Microsoft To Do" is the easiest way to save anything from the web to your ToDo lists.'
+extDescription: It's the easiest way to save anything from the web to your ToDo lists.
+
+QuickAddCommandDescription:
+  en: Quick add task
+  uk: Швидке додавання задачі
+  ru: Быстрое добавление задачи
+
+OpenMicrosoftToDo:
+  en: Open Microsoft To Do
+  uk: Відкрити Microsoft To Do
+  ru: Открыть Microsoft To Do
+
+Title:
+  en: Title
+  uk: Назва
+  ru: Название
+
+Description:
+  en: Description
+  uk: Опис
+  ru: Описание
+
+List:
+  en: List
+  uk: Список
+  ru: Список
+
+ReminderDate:
+  en: Date
+  uk: Дата
+  ru: Дата
+
+ReminderTime:
+  en: and time of reminder
+  uk: та час нагадування
+  ru: и время напоминания
+
+SaveTask:
+  en: Add Task
+  uk: Зберегти
+  ru: Сохранить
+
+SuccessNotification:
+  en: Task successfully added.
+  uk: Задача успішно додана.
+  ru: Задача успешно добавлена.
+
+ErrorNotification:
+  en: An error occurred while saving the task
+  uk: При збереженні задачі сталася помилка
+  ru: При сохранении задачи произошла ошибка
+
+Settings:
+  en: Settings
+  uk: Налаштування
+  ru: Настройки
+
+Loading:
+  en: Loading...
+  uk: Завантаження...
+  ru: Загрузка...
+
+Login:
+  en: Get started
+  uk: Початок роботи
+  ru: Начало работы
+
+Logout:
+  en: Logout
+  uk: Вихід
+  ru: Выход

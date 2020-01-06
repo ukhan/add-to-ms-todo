@@ -1,65 +1,67 @@
 <template>
-  <div class="m-2">
-    <div v-if="isAuthenticated === undefined">
-      Loading...
-    </div>
-    <div v-else-if="isAuthenticated">
-      Authenticated {{ name }} {{ email }}:
-      <a href="#" @click="recheck">Recheck</a>
-      <a href="#" @click="logout">Logout</a>
-    </div>
-    <div v-else>
-      <div class="cursor-pointer" @click="login">
-        Login
-      </div>
-    </div>
+  <div>
+    <LoadingUI v-if="isAuthenticated === undefined" />
+    <TaskUI
+      v-else-if="isAuthenticated"
+      :profile="profile"
+      :lists="lists"
+      @logout="handleLogout"
+    />
+    <LoginUI v-else @login="handleLogin" />
   </div>
 </template>
 
 <script>
-import { CheckAuthMethod, isAuthenticated, login, me, logout } from '@/helpers/auth';
+import {
+  CheckAuthMethod,
+  isAuthenticated,
+  login,
+  me,
+  logout
+} from '@/helpers/auth';
+import { getFolders } from '@/helpers/task';
+import LoadingUI from './LoadingUI';
+import LoginUI from './LoginUI';
+import TaskUI from './TaskUI';
 
 export default {
   name: 'UI',
+
   data() {
     return {
       isAuthenticated: undefined,
-      name: '',
-      email: ''
+      profile: {},
+      lists: []
     };
   },
+
   async created() {
     this.isAuthenticated = await isAuthenticated(CheckAuthMethod.FAST);
-    this.loadProfile();
-  },
-  methods: {
-    async login() {
-      const profile = await login();
-
-      if (profile) {
-        this.isAuthenticated = profile.name !== '';
-        this.name = profile.name;
-        this.email = profile.email;
-      }
-    },
-    async loadProfile() {
-      if (this.isAuthenticated) {
-        const profile = await me();
-
-        this.name = profile.name;
-        this.email = profile.email;
-      }
-    },
-    async recheck() {
-      this.isAuthenticated = await isAuthenticated(CheckAuthMethod.FORCE);
+    if (this.isAuthenticated) {
       this.loadProfile();
-    },
-    logout() {
-      logout();
-      this.isAuthenticated = '';
-      this.name = '';
-      this.email = '';
+      this.lists = await getFolders();
     }
+  },
+
+  methods: {
+    handleLogin(profile) {
+      this.profile = profile;
+      this.isAuthenticated = profile && profile.name !== '';
+    },
+
+    async loadProfile() {
+      this.profile = await me();
+    },
+
+    handleLogout() {
+      this.isAuthenticated = '';
+    }
+  },
+
+  components: {
+    LoadingUI,
+    LoginUI,
+    TaskUI
   }
 };
 </script>

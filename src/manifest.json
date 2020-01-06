@@ -20,12 +20,18 @@
     "scripts": ["background.js"],
     "persistent": false
   },
+  "commands": {
+    "QUICK_ADD": {
+      "description": "__MSG_QuickAddCommandDescription__"
+    }
+  },
   "permissions": [
     "identity",
     "https://login.microsoftonline.com/*",
     "https://outlook.office.com/*",
     "contextMenus",
     "storage",
-    "notifications"
+    "notifications",
+    "activeTab"
   ]
 }
