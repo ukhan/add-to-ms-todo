@@ -1,5 +1,8 @@
 extName: Add to Microsoft To Do
-extDescription: It's the easiest way to save anything from the web to your ToDo lists.
+extDescription:
+  en: It's the easiest way to save anything from the web to your ToDo lists.
+  uk: Це найпростіший спосіб зберегти що-небудь з Інтернету до ваших списків завдань.
+  ru: Это самый простой способ сохранить что-либо из Интернета в ваших списках дел.
 
 QuickAddCommandDescription:
   en: Quick add task
@@ -51,17 +54,12 @@ ErrorNotification:
   uk: При збереженні задачі сталася помилка
   ru: При сохранении задачи произошла ошибка
 
-Settings:
-  en: Settings
-  uk: Налаштування
-  ru: Настройки
-
 Loading:
   en: Loading...
   uk: Завантаження...
   ru: Загрузка...
 
-Login:
+GetStarted:
   en: Get started
   uk: Початок роботи
   ru: Начало работы
@@ -70,3 +68,108 @@ Logout:
   en: Logout
   uk: Вихід
   ru: Выход
+
+Settings:
+  en: Settings
+  uk: Налаштування
+  ru: Настройки
+
+Account:
+  en: Account
+  uk: Обліковий запис
+  ru: Учетная запись
+
+SignIn:
+  en: Sign in
+  uk: Увійти
+  ru: Войти
+
+Quit:
+  en: logout
+  uk: вийти
+  ru: выйти
+
+DateFormat:
+  en: Date format
+  uk: Формат дати
+  ru: Формат даты
+
+TimeFormat:
+  en: Time format
+  uk: Формат часу
+  ru: Формат времени
+
+TimeFormat12:
+  en: 12h
+  uk: 12-годинний
+  ru: 12-часовый
+
+TimeFormat24:
+  en: 24h
+  uk: 24-годинний
+  ru: 24-часовый
+
+FirstDayOfTheWeek:
+  en: First day of the week
+  uk: Перший день тижня
+  ru: Первый день недели
+
+Monday:
+  en: Monday
+  uk: понеділок
+  ru: понедельник
+
+Sunday:
+  en: Sunday
+  uk: неділя
+  ru: воскресенье
+
+ReminderTimeInterval:
+  en: Reminder time interval
+  uk: Інтервал часу нагадування
+  ru: Интервал выбора времени напоминания
+
+ReminderTimeStep:
+  en: Reminder time step
+  uk: Крок вибору часу нагадування
+  ru: Шаг выбора времени напоминания
+
+DefaultReminderTime:
+  en: Default reminder time
+  uk: Час нагадування за замовчуванням
+  ru: Время напоминания по умолчанию
+
+RememberLastUsedTime:
+  en: Remember last used time
+  uk: Запам'ятати час, що використовувався останнім
+  ru: Запомнить последнее использованное время
+
+DefaultList:
+  en: Default list
+  uk: Список за замовчуванням
+  ru: Список по умолчанию
+
+RememberLastUsedList:
+  en: Remember last used list
+  uk: Запам'ятовувати останній використаний список
+  ru: Запоминать последний использованный список
+
+NotifyOnSuccess:
+  en: Report successfully save the task
+  uk: Інформувати про успішне додавання задачі
+  ru: Информировать об успешном добавлении задачи
+
+ShowButtons:
+  en: Show these buttons in the extension window
+  uk: Показувати ці кнопки в вікні розширення
+  ru: Показывать эти кнопки в окне расширения
+
+RateExtension:
+  en: Rate the extension
+  uk: Оцінити розширення
+  ru: Оценить расширение
+
+ReportBug:
+  en: Report a bug
+  uk: Повідомити про помилку
+  ru: Сообщить об ошибке

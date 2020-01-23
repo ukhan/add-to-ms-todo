@@ -24,21 +24,12 @@
 
     <el-row :gutter="8">
       <el-col :span="15">
-        <el-button-group>
-          <el-button
-            icon="el-icon-setting"
-            size="medium"
-            :title="t('Settings')"
-          ></el-button>
-          <el-button
-            icon="el-icon-switch-button"
-            :title="t('Logout') + ` [${profile.name}]`"
-            size="medium"
-            @click="logout"
-          ></el-button>
-        </el-button-group>
+        <ServiceButtons
+          :config="config"
+          :profile="profile"
+          @logout="$emit('logout')"
+        />
       </el-col>
-
       <el-col :span="9">
         <el-button
           class="submit-button"
@@ -122,9 +113,11 @@ import { addTask } from '@/helpers/task';
 import { t } from '@/helpers/i18n';
 import notification from '@/helpers/notification';
 import getTabInfo from '@/helpers/tab';
+import { set as setConfig } from '@/helpers/config';
 
 import TextareaFormItem from './TextareaFormItem';
 import ReminderFormItem from './ReminderFormItem';
+import ServiceButtons from './ServiceButtons';
 
 export default {
   name: 'TaskUI',
@@ -144,7 +137,7 @@ export default {
     return {
       title: '',
       description: '',
-      list: undefined,
+      list: '',
       reminderDateTime: '',
       inProcess: false,
       config: this.$root.config
@@ -155,16 +148,19 @@ export default {
     titleEmpty() {
       return !this.title.trim().length;
     },
+
     lst: {
       get() {
         if (!this.lists.length) return null;
 
-        if (!this.list) {
+        if (this.list == '') {
           let lists_ids = this.lists.map(list => list.id);
           if (lists_ids.indexOf(this.config.listDefault) === -1) {
             let defaultList = this.lists.filter(list => list.isDefault);
             this.config.listDefault = defaultList[0].id;
             this.list = defaultList[0].id;
+          } else {
+            this.list = this.config.listDefault;
           }
         }
 
@@ -174,6 +170,15 @@ export default {
       set(list) {
         this.list = list;
       }
+    }
+  },
+
+  watch: {
+    config: {
+      handler(config) {
+        setConfig(config);
+      },
+      deep: true
     }
   },
 
@@ -200,6 +205,16 @@ export default {
         reminder: this.reminderDateTime
       };
       this.inProcess = true;
+      if (this.config.useLastUsedList) {
+        this.config.listDefault = this.list;
+      }
+      if (this.config.useLastUsedTime && this.reminderDateTime) {
+        let [d, t] = this.reminderDateTime.split('T');
+        this.config.timeDefault = t
+          .split(':')
+          .splice(0, 2)
+          .join(':');
+      }
       addTask(task)
         .then(response => {
           this.inProcess = false;
@@ -207,6 +222,8 @@ export default {
             notification(this.t('SuccessNotification'), false, () => {
               window.close();
             });
+          } else {
+            window.close();
           }
         })
         .catch(res => {
@@ -225,7 +242,8 @@ export default {
 
   components: {
     TextareaFormItem,
-    ReminderFormItem
+    ReminderFormItem,
+    ServiceButtons
   }
 };
 </script>

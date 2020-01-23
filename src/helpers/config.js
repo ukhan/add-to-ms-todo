@@ -5,18 +5,17 @@ const isCyrillic = currentLocale === 'uk' || currentLocale === 'ru';
 
 const defaultConfig = {
   dateFormat: isCyrillic ? 'dd.MM.yyyy' : 'MM/dd/yyyy',
-  timeFormat: isCyrillic ? '24h' : '12h', // TODO
+  timeFormat: isCyrillic ? '24h' : '12h',
   timeDefault: '10:00',
   timeStart: '00:00',
-  timeStep: '00:30',
   timeEnd: '23:59',
+  timeStep: '0:30',
   useLastUsedTime: true,
   firstDayOfWeek: isCyrillic ? 1 : 7,
-
   listDefault: '',
   useLastUsedList: false,
-
-  notifyOnSuccess: true
+  notifyOnSuccess: true,
+  showButtons: ['settings', 'review', 'issue', 'logout']
 };
 
 export function get() {

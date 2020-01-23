@@ -14,11 +14,11 @@
       </el-col>
       <el-col :span="9">
         <el-form-item :label="_('ReminderTime')">
-          <el-time-select
+          <TimePicker
             v-model="remindTime"
-            :clearable="false"
-            :picker-options="timePickerOptions"
-          ></el-time-select>
+            :format="config.timeFormat"
+            :step="config.timeStep"
+          />
         </el-form-item>
       </el-col>
     </el-row>
@@ -27,6 +27,8 @@
 
 <script>
 import { currentLocale, t as _ } from '@/helpers/i18n';
+import { padZero } from '@/helpers/utils';
+import TimePicker from '@/components/TimePicker';
 
 export default {
   name: 'ReminderFormItem',
@@ -125,10 +127,6 @@ export default {
       return `${year}-${month}-${day}`;
     },
 
-    padZero(v, len = 2) {
-      return v.toString().padStart(len, '0');
-    },
-
     timeLessCurrent(time) {
       if (!time) return true;
 
@@ -142,7 +140,10 @@ export default {
       return timed < current;
     },
 
-    _
-  }
+    _,
+    padZero
+  },
+
+  components: { TimePicker }
 };
 </script>

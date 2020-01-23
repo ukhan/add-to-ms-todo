@@ -20,6 +20,9 @@
     "scripts": ["background.js"],
     "persistent": false
   },
+  "options_ui": {
+    "page": "options.html"
+  },
   "commands": {
     "QUICK_ADD": {
       "description": "__MSG_QuickAddCommandDescription__"

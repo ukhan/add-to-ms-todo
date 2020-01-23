@@ -1,13 +1,22 @@
 import { bgAuth, bgMe, bgRefreshToken } from './helpers/auth';
 import { t } from './helpers/i18n';
 import { bgGetFolders, bgAddTask, quickAddTask } from './helpers/task';
-
-const TODO_URL = 'https://to-do.microsoft.com/';
+import pages from './helpers/pages';
 
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
     id: 'OPEN_TODO',
     title: t('OpenMicrosoftToDo'),
+    contexts: ['browser_action']
+  });
+  chrome.contextMenus.create({
+    id: 'OPEN_REVIEWS_PAGE',
+    title: t('RateExtension'),
+    contexts: ['browser_action']
+  });
+  chrome.contextMenus.create({
+    id: 'OPEN_SUPPORT_PAGE',
+    title: t('ReportBug'),
     contexts: ['browser_action']
   });
   chrome.contextMenus.create({
@@ -18,12 +27,16 @@ chrome.runtime.onInstalled.addListener(() => {
 });
 
 chrome.contextMenus.onClicked.addListener(info => {
-  if (info.menuItemId === 'OPEN_TODO') {
-    chrome.tabs.create({
-      url: TODO_URL
-    });
-  } else if (info.menuItemId === 'QUICK_ADD_TASK') {
-    quickAddTask();
+  switch (info.menuItemId) {
+    case 'OPEN_TODO':
+      pages.todo();
+      break;
+    case 'OPEN_REVIEWS_PAGE':
+      pages.reviews();
+      break;
+    case 'OPEN_SUPPORT_PAGE':
+      pages.support();
+      break;
   }
 });
 

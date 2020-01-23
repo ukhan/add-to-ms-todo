@@ -7,7 +7,7 @@
     </el-row>
     <el-row type="flex" justify="center">
       <el-button type="primary" :loading="inProgress" @click="auth">
-        {{ t('Login') }}
+        {{ t('GetStarted') }}
       </el-button>
     </el-row>
   </div>
