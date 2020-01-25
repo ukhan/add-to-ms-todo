@@ -1,7 +1,7 @@
 export default function getTabInfo() {
   return Promise.all([
     new Promise((resolve, reject) => {
-      chrome.tabs.query({ active: true }, tabs => {
+      chrome.tabs.query({ currentWindow: true, active: true }, tabs => {
         if (chrome.runtime.lastError) {
           reject(chrome.runtime.lastError.message);
         }
