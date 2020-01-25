@@ -24,7 +24,7 @@ export async function getFolders() {
 }
 
 export async function bgGetFolders(access_token) {
-  let url = `${baseUrl}/taskfolders`;
+  let url = `${baseUrl}/taskfolders?top=100`; // FIXME
 
   return fetch(url, {
     method: 'GET',
