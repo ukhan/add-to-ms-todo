@@ -37,6 +37,9 @@ chrome.contextMenus.onClicked.addListener(info => {
     case 'OPEN_SUPPORT_PAGE':
       pages.support();
       break;
+    case 'QUICK_ADD_TASK':
+      quickAddTask();
+      break;
   }
 });
 
