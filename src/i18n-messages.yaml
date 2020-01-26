@@ -104,6 +104,16 @@ TimeFormat12:
   uk: 12-годинний
   ru: 12-часовый
 
+AM:
+  en: a.m.
+  uk: д.п.
+  ru: д.п.
+
+PM:
+  en: p.m.
+  uk: п.п.
+  ru: п.п.
+
 TimeFormat24:
   en: 24h
   uk: 24-годинний

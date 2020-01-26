@@ -1,3 +1,5 @@
+import { t } from './i18n';
+
 export function padZero(v, len = 2) {
   return v.toString().padStart(len, '0');
 }
@@ -17,7 +19,7 @@ export function formatTime(format, time24 = '') {
 
   if (format === '12h') {
     let [h, m] = time24.split(':').map(v => parseInt(v)),
-      xm = h < 12 ? 'a.m.' : 'p.m.';
+      xm = h < 12 ? t('AM') : t('PM');
 
     if (h === 0) {
       h = 12;
