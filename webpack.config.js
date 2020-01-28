@@ -74,7 +74,9 @@ module.exports = (env, argv) => {
       new MiniCssExtractPlugin({
         filename: '[name].css'
       }),
-      new YamlLocalesWebpackPlugin(),
+      new YamlLocalesWebpackPlugin({
+        messageAdditions: argv.beta ? { extName: ' (beta)' } : {}
+      }),
       new VueLoaderPlugin(),
       new webpack.ProgressPlugin()
     ]
