@@ -1,6 +1,7 @@
 import { bgAuth, bgMe, bgRefreshToken } from './helpers/auth';
 import { t } from './helpers/i18n';
 import { bgGetFolders, bgAddTask, quickAddTask } from './helpers/task';
+import { closeNotification } from './helpers/notification';
 import pages from './helpers/pages';
 
 chrome.runtime.onInstalled.addListener(() => {
@@ -75,5 +76,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         sendResponse({ ok: false, response });
       });
     return true;
+  } else if (request.action === 'CLOSE_NOTIFICATION') {
+    closeNotification(request.id);
   }
 });

@@ -111,7 +111,7 @@
 import { logout } from '@/helpers/auth';
 import { addTask } from '@/helpers/task';
 import { t } from '@/helpers/i18n';
-import notification from '@/helpers/notification';
+import { notification, closeNotification } from '@/helpers/notification';
 import getTabInfo from '@/helpers/tab';
 import { set as setConfig } from '@/helpers/config';
 
@@ -221,6 +221,8 @@ export default {
           if (this.config.notifyOnSuccess) {
             notification(this.t('SuccessNotification'), false, () => {
               window.close();
+            }).then(id => {
+              chrome.runtime.sendMessage({ action: 'CLOSE_NOTIFICATION', id });
             });
           } else {
             window.close();

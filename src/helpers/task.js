@@ -2,7 +2,7 @@ import { getToken } from './auth';
 import { get as getConfig } from './config';
 import { t } from './i18n';
 import getTabInfo from './tab';
-import notification from './notification';
+import { notification, closeNotification } from './notification';
 
 const baseUrl = 'https://outlook.office.com/api/v2.0/me';
 
@@ -66,7 +66,9 @@ export async function quickAddTask() {
   return bgAddTask(access_token, task)
     .then(() => {
       if (config.notifyOnSuccess) {
-        notification(t('SuccessNotification'));
+        notification(t('SuccessNotification')).then(id =>
+          closeNotification(id)
+        );
       }
     })
     .catch(res => {
