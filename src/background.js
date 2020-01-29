@@ -1,5 +1,5 @@
 import { bgAuth, bgMe, bgRefreshToken } from './helpers/auth';
-import { t } from './helpers/i18n';
+import { currentLocale, t } from './helpers/i18n';
 import { bgGetFolders, bgAddTask, quickAddTask } from './helpers/task';
 import { closeNotification } from './helpers/notification';
 import pages from './helpers/pages';
@@ -80,3 +80,22 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     closeNotification(request.id);
   }
 });
+
+setSurvey(currentLocale);
+
+function setSurvey(locale) {
+  let url;
+
+  switch (locale) {
+    case 'uk':
+    case 'ru':
+      url =
+        'https://docs.google.com/forms/d/e/1FAIpQLScaL7W5yYBDGanpF2OOumeiHft6bFoCuSHh8B_HeC04OX3Hdg/viewform';
+      break;
+    default:
+      url =
+        'https://docs.google.com/forms/d/e/1FAIpQLSeQFxY8T8lSi-k8z3DQ4BmPpFOqQr4ewVCGINldjnwh4M3W6A/viewform';
+  }
+
+  chrome.runtime.setUninstallURL(url);
+}
