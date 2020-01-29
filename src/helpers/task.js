@@ -110,7 +110,8 @@ export async function bgAddTask(access_token, task) {
       Body: {
         Content: task.description,
         ContentType: 'Text'
-      }
+      },
+      Importance: task.importance ? 'High' : 'Normal'
     };
 
   if (task.reminder) {

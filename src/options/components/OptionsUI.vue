@@ -124,7 +124,7 @@
           <i class="el-icon-setting"></i>
         </el-checkbox-button>
         <el-checkbox-button label="review" :title="t('RateExtension')">
-          <i class="el-icon-star-off"></i>
+          <i class="el-icon-medal-1"></i>
         </el-checkbox-button>
         <el-checkbox-button label="issue" :title="t('ReportBug')">
           <i class="el-icon-warning-outline"></i>

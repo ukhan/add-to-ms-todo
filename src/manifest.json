@@ -14,7 +14,8 @@
       "24": "icons/todo-24.png",
       "32": "icons/todo-32.png"
     },
-    "default_popup": "popup.html"
+    "default_popup": "popup.html",
+    "default_title": "__MSG_BrowserActionTitle__"
   },
   "background": {
     "scripts": ["background.js"],

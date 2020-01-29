@@ -8,17 +8,33 @@
       v-model="description"
     />
 
-    <el-form-item :label="t('List')">
-      <el-select v-model="lst" filterable>
-        <el-option
-          v-for="l in lists"
-          :key="l.id"
-          :label="l.label"
-          :value="l.id"
-        >
-        </el-option>
-      </el-select>
-    </el-form-item>
+    <el-row :gutter="8">
+      <el-col :span="22">
+        <el-form-item :label="t('List')">
+          <el-select v-model="lst" filterable>
+            <el-option
+              v-for="l in lists"
+              :key="l.id"
+              :label="l.label"
+              :value="l.id"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+
+      <el-col :span="2">
+        <i
+          :title="t('Importance')"
+          @click="importance = !importance"
+          class="importance-button"
+          :class="{
+            'el-icon-star-off': !importance,
+            'el-icon-star-on': importance
+          }"
+        ></i>
+      </el-col>
+    </el-row>
 
     <ReminderFormItem v-model="reminderDateTime" />
 
@@ -105,6 +121,17 @@
   left: 4px;
   right: 18px;
 }
+.importance-button {
+  font-size: 1.4rem;
+  padding-top: 0.8rem;
+  color: #909399;
+  cursor: pointer;
+}
+.importance-button.el-icon-star-on {
+  font-size: 1.7rem;
+  padding-top: 0.6rem;
+  margin-left: -0.2rem;
+}
 </style>
 
 <script>
@@ -139,6 +166,7 @@ export default {
       description: '',
       list: '',
       reminderDateTime: '',
+      importance: false,
       inProcess: false,
       config: this.$root.config
     };
@@ -202,7 +230,8 @@ export default {
         title: this.title,
         description: this.description,
         list: this.list,
-        reminder: this.reminderDateTime
+        reminder: this.reminderDateTime,
+        importance: this.importance
       };
       this.inProcess = true;
       if (this.config.useLastUsedList) {

@@ -4,6 +4,11 @@ extDescription:
   uk: Це найпростіший спосіб зберегти що-небудь з Інтернету до ваших списків завдань.
   ru: Это самый простой способ сохранить что-либо из Интернета в ваших списках дел.
 
+BrowserActionTitle:
+  en: Add to Microsoft To Do
+  uk: Додати в Microsoft To Do
+  ru: Добавить в Microsoft To Do
+
 QuickAddCommandDescription:
   en: Quick add task
   uk: Швидке додавання задачі
@@ -28,6 +33,11 @@ List:
   en: List
   uk: Список
   ru: Список
+
+Importance:
+  en: Importance
+  uk: Важливість
+  ru: Важность
 
 ReminderDate:
   en: Date

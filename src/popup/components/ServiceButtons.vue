@@ -11,7 +11,7 @@
     ></el-button>
     <el-button
       v-if="isReviewButtonVisible"
-      icon="el-icon-star-off"
+      icon="el-icon-medal-1"
       size="medium"
       :title="t('RateExtension')"
       @click="goReviews"
@@ -50,7 +50,7 @@
     ></el-button>
     <el-button
       v-if="isReviewButtonVisible"
-      icon="el-icon-star-off"
+      icon="el-icon-medal-1"
       size="medium"
       :title="t('RateExtension')"
       @click="goReviews"
