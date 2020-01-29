@@ -75,16 +75,38 @@
       type="primary"
       plain
     ></el-button>
-    <template v-show="noButtonsVisible">
-      &nbsp;
-    </template>
+
+    <div class="made-with-love" v-show="noButtonsVisible">
+      <div>ver {{ version }}</div>
+      <div>
+        Made with
+        <span class="love">❤</span> in Ukraine by
+        <a href="mailto:pavel.ukhan@gmail.com">Pavel Ukhan</a>
+      </div>
+    </div>
   </div>
 </template>
+
+<style>
+.made-with-love {
+  font-size: 0.6rem;
+  color: #909399;
+  text-align: center;
+  padding-left: 5px;
+  padding-top: 8px;
+}
+.love {
+  color: #e20338;
+  cursor: pointer;
+}
+</style>
 
 <script>
 import { t } from '@/helpers/i18n';
 import { logout } from '@/helpers/auth';
 import pages from '@/helpers/pages';
+
+const p = require('../../../package.json');
 
 export default {
   name: 'ServiceButtons',
@@ -98,6 +120,12 @@ export default {
       type: Object,
       required: true
     }
+  },
+
+  data() {
+    return {
+      version: p.version
+    };
   },
 
   computed: {

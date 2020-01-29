@@ -134,6 +134,10 @@
         </el-checkbox-button>
       </el-checkbox-group>
     </el-form-item>
+    <div class="made-with-love">
+      ver {{ version }} • Made with <span class="love">❤</span> in Ukraine by
+      <a href="mailto:pavel.ukhan@gmail.com">Pavel Ukhan</a>
+    </div>
   </el-form>
 </template>
 
@@ -145,7 +149,7 @@
 }
 .options-form {
   width: 480px;
-  margin-bottom: 40px;
+  margin-bottom: 14px;
 }
 .el-form-item__content,
 .el-form-item__label {
@@ -194,6 +198,16 @@
 .buttons .el-form-item__label {
   margin-top: -4px;
 }
+.made-with-love {
+  text-align: center;
+  font-size: 0.6rem;
+  color: #909399;
+  margin-top: 18px;
+}
+.love {
+  color: #e20338;
+  cursor: pointer;
+}
 </style>
 
 <script>
@@ -210,6 +224,8 @@ import { padZero, formatTime } from '@/helpers/utils';
 import { getFolders } from '@/helpers/task';
 import TimePicker from '@/components/TimePicker';
 
+const p = require('../../../package.json');
+
 export default {
   name: 'OptionsUI',
 
@@ -218,7 +234,8 @@ export default {
       isAuthenticated: undefined,
       profile: {},
       lists: [],
-      disabledLists: ''
+      disabledLists: '',
+      version: p.version
     };
   },
 
