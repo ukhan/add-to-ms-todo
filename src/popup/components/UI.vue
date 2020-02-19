@@ -39,7 +39,10 @@ export default {
     this.isAuthenticated = await isAuthenticated(CheckAuthMethod.FAST);
     if (this.isAuthenticated) {
       this.loadProfile();
-      this.lists = await getFolders();
+      chrome.storage.local.get(['folders'], async res => {
+        this.lists = res.folders || [];
+        this.lists = await getFolders();
+      });
     }
   },
 

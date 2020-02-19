@@ -3,6 +3,7 @@ const urlParse = require('url-parse');
 
 import notification from './notification';
 import storage from './encrypted-storage';
+import { safeJson } from './fetch';
 
 const oauthURL = 'https://login.microsoftonline.com/common/oauth2/v2.0';
 const clientID = process.env.CLIENT_ID;
@@ -101,13 +102,7 @@ export function bgRefreshToken(refresh_token) {
       },
       body: `client_id=${clientID}&scope=${scope}&refresh_token=${refresh_token}&grant_type=refresh_token&client_secret=${clientSecret}`
     })
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          reject(response.statusText);
-        }
-      })
+      .then(safeJson)
       .then(data => {
         storage.set({
           access_token: data.access_token,
@@ -167,7 +162,7 @@ export function bgAuth() {
           },
           body: `client_id=${clientID}&scope=${scope}&code=${code}&redirect_uri=${redirect_uri}&grant_type=authorization_code&client_secret=${clientSecret}&code_verifier=${state}`
         })
-          .then(response => response.json())
+          .then(safeJson)
           .then(data => {
             storage.set({
               access_token: data.access_token,
@@ -196,7 +191,7 @@ export function bgMe(token) {
         Authorization: `Bearer ${token}`
       }
     })
-      .then(response => response.json())
+      .then(safeJson)
       .then(data => {
         const me = { name: data.DisplayName, email: data.EmailAddress };
         storage.set(me);

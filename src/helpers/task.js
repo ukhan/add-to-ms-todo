@@ -3,6 +3,7 @@ import { get as getConfig } from './config';
 import { t } from './i18n';
 import getTabInfo from './tab';
 import { notification, closeNotification } from './notification';
+import { woodpeckerFetch } from './fetch';
 
 const baseUrl = 'https://outlook.office.com/api/v2.0/me';
 
@@ -17,7 +18,9 @@ export async function getFolders() {
           reject(chrome.runtime.lastError.message);
         }
 
-        resolve(response && 'folders' in response ? response.folders : []);
+        let folders = response && 'folders' in response ? response.folders : [];
+        chrome.storage.local.set({ folders });
+        resolve(folders);
       }
     );
   }).catch(message => notification(message));
@@ -26,21 +29,13 @@ export async function getFolders() {
 export async function bgGetFolders(access_token) {
   let url = `${baseUrl}/taskfolders?top=100`; // FIXME
 
-  return fetch(url, {
+  return woodpeckerFetch(url, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${access_token}`,
       'Content-Type': 'application/json'
     }
   })
-    .then(response => {
-      if (response.ok) {
-        return response.json();
-      } else {
-        throw response.statusText ||
-          `Error ${response.status} occurred while get lists of tasks.`;
-      }
-    })
     .then(folders => {
       return folders.value.map(folder => {
         return {
@@ -50,7 +45,11 @@ export async function bgGetFolders(access_token) {
         };
       });
     })
-    .catch(err => notification(err));
+    .catch(res => {
+      let err =
+        t('GetListsError') + ' – \n' + (res.statusText || `#${res.status}`);
+      notification(err);
+    });
 }
 
 export async function quickAddTask() {
@@ -73,9 +72,7 @@ export async function quickAddTask() {
     })
     .catch(res => {
       let err =
-        this.t('ErrorNotification') +
-        ' – \n' +
-        (res.statusText || `#${res.status}`);
+        t('ErrorNotification') + ' – \n' + (res.statusText || `#${res.status}`);
       notification(err);
     });
 }
@@ -122,19 +119,13 @@ export async function bgAddTask(access_token, task) {
     };
   }
 
-  return fetch(url, {
+  return woodpeckerFetch(url, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${access_token}`,
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(T)
-  }).then(response => {
-    if (response.ok) {
-      return response.json();
-    } else {
-      throw { status: response.status, statusText: response.statusText };
-    }
   });
 }
 
