@@ -80,7 +80,14 @@
       <div>ver {{ version }}</div>
       <div>
         Made with
-        <span class="love">❤</span> in Ukraine by
+        <span class="love">❤</span> in
+        <a href="https://madewithlove.in.ua">
+          <img
+            class="Ukraine"
+            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAuSURBVDhPYxgGQHHa5ygg/k8mjho1AGjAn+umUX9vmP4nB4P0jhoANGCoAwYGABPEurh8awULAAAAAElFTkSuQmCC"
+          />
+        </a>
+        Ukraine by
         <a href="mailto:pavel.ukhan@gmail.com">Pavel Ukhan</a>
       </div>
     </div>
@@ -90,6 +97,7 @@
 <style>
 .made-with-love {
   font-size: 0.6rem;
+  line-height: 0.9rem;
   color: #909399;
   text-align: center;
   padding-left: 5px;
@@ -98,6 +106,11 @@
 .love {
   color: #e20338;
   cursor: pointer;
+}
+.Ukraine {
+  padding-left: 2px;
+  height: 12px;
+  vertical-align: middle;
 }
 </style>
 

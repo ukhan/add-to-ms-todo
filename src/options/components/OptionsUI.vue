@@ -135,8 +135,14 @@
       </el-checkbox-group>
     </el-form-item>
     <div class="made-with-love">
-      ver {{ version }} • Made with <span class="love">❤</span> in Ukraine by
-      <a href="mailto:pavel.ukhan@gmail.com">Pavel Ukhan</a>
+      ver {{ version }} • Made with <span class="love">❤</span> in
+      <a href="https://madewithlove.in.ua">
+        <img
+          class="Ukraine"
+          src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAuSURBVDhPYxgGQHHa5ygg/k8mjho1AGjAn+umUX9vmP4nB4P0jhoANGCoAwYGABPEurh8awULAAAAAElFTkSuQmCC"
+        />
+      </a>
+      Ukraine by <a href="mailto:pavel.ukhan@gmail.com">Pavel Ukhan</a>
     </div>
   </el-form>
 </template>
@@ -207,6 +213,11 @@
 .love {
   color: #e20338;
   cursor: pointer;
+}
+.Ukraine {
+  padding-left: 2px;
+  height: 12px;
+  vertical-align: middle;
 }
 </style>
 
