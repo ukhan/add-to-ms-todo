@@ -27,29 +27,38 @@ export async function getFolders() {
 }
 
 export async function bgGetFolders(access_token) {
-  let url = `${baseUrl}/taskfolders?top=100`; // FIXME
+  let url = `${baseUrl}/taskfolders`;
+  let folders = [];
 
-  return woodpeckerFetch(url, {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${access_token}`,
-      'Content-Type': 'application/json'
-    }
-  })
-    .then(folders => {
-      return folders.value.map(folder => {
+  try {
+    do {
+      let chunkData = await woodpeckerFetch(url, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      let chunkFolders = chunkData.value.map(folder => {
         return {
           id: folder.Id,
           label: folder.Name,
           isDefault: folder.IsDefaultFolder
         };
       });
-    })
-    .catch(res => {
-      let err =
-        t('GetListsError') + ' – \n' + (res.statusText || `#${res.status}`);
-      notification(err);
-    });
+      folders = folders.concat(chunkFolders);
+      url = chunkData['@odata.nextLink'] || '';
+    } while (url !== '');
+  } catch (res) {
+    folders = [];
+    let err = t('GetListsError');
+    if (res.statusText || res.status) {
+      err = err + '\n' + (res.statusText || `#${res.status}`);
+    }
+    notification(err);
+  }
+
+  return folders;
 }
 
 export async function quickAddTask() {

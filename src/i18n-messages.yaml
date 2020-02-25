@@ -195,6 +195,6 @@ ReportBug:
   ru: Сообщить об ошибке
 
 GetListsError:
-  en: When trying to get task lists, the server responded with an error
-  uk: При спробі отримання списків завдань сервер відповів помилкою
-  ru: При попытке получения списков задач сервер ответил ошибкой
+  en: Failed to get task lists
+  uk: Не вдалося отримати списки завдань
+  ru: Не удалось получить списки задач

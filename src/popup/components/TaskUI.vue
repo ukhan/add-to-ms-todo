@@ -11,7 +11,7 @@
     <el-row :gutter="8">
       <el-col :span="22">
         <el-form-item :label="t('List')">
-          <el-select v-model="lst" filterable>
+          <el-select v-model="lst" :placeholder="lstPlaceholder" filterable>
             <el-option
               v-for="l in lists"
               :key="l.id"
@@ -198,6 +198,14 @@ export default {
       set(list) {
         this.list = list;
       }
+    },
+
+    lstPlaceholder() {
+      if (this || this.lists === []) {
+        return this.t('Loading');
+      } else {
+        return '';
+      }
     }
   },
 
@@ -258,11 +266,10 @@ export default {
           }
         })
         .catch(res => {
-          let err =
-            this.t('ErrorNotification') +
-            ' – \n' +
-            (res.statusText || `#${res.status}`);
-
+          let err = this.t('ErrorNotification');
+          if (res.statusText || res.status) {
+            err = err + '\n' + (res.statusText || `#${res.status}`);
+          }
           this.inProcess = false;
           notification(err);
         });
