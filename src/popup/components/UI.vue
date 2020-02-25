@@ -41,7 +41,10 @@ export default {
       this.loadProfile();
       chrome.storage.local.get(['folders'], async res => {
         this.lists = res.folders || [];
-        this.lists = await getFolders();
+        let folders = await getFolders();
+        if (folders.length) {
+          this.lists = folders;
+        }
       });
     }
   },
