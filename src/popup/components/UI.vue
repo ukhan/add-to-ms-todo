@@ -39,13 +39,7 @@ export default {
     this.isAuthenticated = await isAuthenticated(CheckAuthMethod.FAST);
     if (this.isAuthenticated) {
       this.loadProfile();
-      chrome.storage.local.get(['folders'], async res => {
-        this.lists = res.folders || [];
-        let folders = await getFolders();
-        if (folders.length) {
-          this.lists = folders;
-        }
-      });
+      this.loadFolders();
     }
   },
 
@@ -53,10 +47,21 @@ export default {
     handleLogin(profile) {
       this.profile = profile;
       this.isAuthenticated = profile && profile.name !== '';
+      if (this.isAuthenticated) this.loadFolders();
     },
 
     async loadProfile() {
       this.profile = await me();
+    },
+
+    async loadFolders() {
+      chrome.storage.local.get(['folders'], async res => {
+        this.lists = res.folders || [];
+        let folders = await getFolders();
+        if (folders.length) {
+          this.lists = folders;
+        }
+      });
     },
 
     handleLogout() {
