@@ -15,7 +15,7 @@ const defaultConfig = {
   listDefault: '',
   useLastUsedList: false,
   notifyOnSuccess: true,
-  showButtons: ['settings', 'review', 'issue', 'logout']
+  showButtons: ['settings'] // 'settings', 'review', 'issue', 'logout'
 };
 
 export function get() {
