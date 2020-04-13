@@ -8,16 +8,20 @@ export function safeJson(response) {
   }
 }
 
-function timeoutFetch(url, options, timeout) {
-  return Promise.race([
-    fetch(url, options),
-    new Promise((_, reject) =>
-      setTimeout(
-        () => reject({ status: 408, statusText: 'Timeout reached.' }),
-        timeout
+function timeoutFetch(url, options, timeout = null) {
+  if (Number.isInteger(timeout)) {
+    return Promise.race([
+      fetch(url, options),
+      new Promise((_, reject) =>
+        setTimeout(
+          () => reject({ status: 408, statusText: 'Timeout reached.' }),
+          timeout
+        )
       )
-    )
-  ]);
+    ]);
+  } else {
+    return fetch(url, options);
+  }
 }
 
 export function woodpeckerFetch(
@@ -27,7 +31,7 @@ export function woodpeckerFetch(
     limit = 5,
     delay = 200,
     statusCodes = [408, 413, 429, 500, 502, 503, 504],
-    timeout = 2000
+    timeout = 3000
   } = {}
 ) {
   const repeat = () =>

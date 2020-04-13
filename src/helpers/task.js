@@ -141,14 +141,18 @@ export async function bgAddTask(access_token, task) {
     };
   }
 
-  return woodpeckerFetch(url, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${access_token}`,
-      'Content-Type': 'application/json'
+  return woodpeckerFetch(
+    url,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(T)
     },
-    body: JSON.stringify(T)
-  });
+    { timeout: null }
+  );
 }
 
 function currentTimeZone() {
