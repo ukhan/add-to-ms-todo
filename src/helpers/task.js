@@ -2,6 +2,7 @@ import { getToken } from './auth';
 import { get as getConfig } from './config';
 import { t } from './i18n';
 import getTabInfo from './tab';
+import getLinkTitle from './link';
 import { notification, closeNotification } from './notification';
 import { woodpeckerFetch } from './fetch';
 
@@ -61,16 +62,28 @@ export async function bgGetFolders(access_token) {
   return folders;
 }
 
-export async function quickAddTask() {
+export async function quickAddTask(info) {
   let config = await getConfig();
   let access_token = await getToken(false, true);
   let tabInfo = await getTabInfo();
-  let task = {
-    title: tabInfo.title,
-    description: tabInfo.selected.trim().length
-      ? `${tabInfo.selected}\n\n ${tabInfo.url}`
-      : tabInfo.url
-  };
+  let title, description;
+
+  if ('linkUrl' in info) {
+    let linkUrl = info.linkUrl;
+    let linkTitle = await getLinkTitle(linkUrl);
+    let pageInfoTitle = t('CreatedOnPage');
+
+    title = linkTitle || tabInfo.title;
+    description = `${linkUrl}\n\n*** ${pageInfoTitle} ***\n${tabInfo.title}\n${tabInfo.url}`;
+  } else {
+    title = tabInfo.title;
+    description = tabInfo.selected.trim().length
+      ? `${tabInfo.selected}\n\n${tabInfo.url}`
+      : tabInfo.url;
+  }
+
+  let task = { title, description };
+
   return bgAddTask(access_token, task)
     .then(() => {
       if (config.notifyOnSuccess) {

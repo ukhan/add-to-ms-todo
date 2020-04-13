@@ -198,3 +198,8 @@ GetListsError:
   en: Failed to get task lists
   uk: Не вдалося отримати списки завдань
   ru: Не удалось получить списки задач
+
+CreatedOnPage:
+  en: Created on the page
+  uk: Сворено на сторінці
+  ru: Создано на странице

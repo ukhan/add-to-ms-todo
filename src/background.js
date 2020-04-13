@@ -23,7 +23,7 @@ chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
     id: 'QUICK_ADD_TASK',
     title: t('QuickAddCommandDescription'),
-    contexts: ['page', 'selection']
+    contexts: ['page', 'selection', 'link', 'image']
   });
 });
 
@@ -39,7 +39,7 @@ chrome.contextMenus.onClicked.addListener(info => {
       pages.support();
       break;
     case 'QUICK_ADD_TASK':
-      quickAddTask();
+      quickAddTask(info);
       break;
   }
 });
