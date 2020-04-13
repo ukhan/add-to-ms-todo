@@ -24,7 +24,7 @@ export function woodpeckerFetch(
   url,
   options = {},
   {
-    limit = 3,
+    limit = 5,
     delay = 200,
     statusCodes = [408, 413, 429, 500, 502, 503, 504],
     timeout = 2000

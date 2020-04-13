@@ -1,6 +1,6 @@
 {
   "name": "add-to-ms-todo",
-  "version": "0.10.4",
+  "version": "0.11.0",
   "scripts": {
     "dev": "webpack --mode=development",
     "dev:watch": "webpack --mode=development --watch",
