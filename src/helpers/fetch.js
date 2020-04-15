@@ -31,7 +31,7 @@ export function woodpeckerFetch(
     limit = 5,
     delay = 200,
     statusCodes = [408, 413, 429, 500, 502, 503, 504],
-    timeout = 3000
+    timeout = 10000
   } = {}
 ) {
   const repeat = () =>
