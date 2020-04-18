@@ -29,7 +29,7 @@ export async function getFolders() {
 
 export async function bgGetFolders(access_token) {
   let config = await getConfig();
-  let url = `${baseUrl}/taskfolders`;
+  let url = `${baseUrl}/taskfolders?top=25`;
   let folders = [];
 
   try {
