@@ -15,7 +15,8 @@ const defaultConfig = {
   listDefault: '',
   useLastUsedList: false,
   notifyOnSuccess: true,
-  showButtons: ['settings'] // 'settings', 'review', 'issue', 'logout'
+  showButtons: ['settings'], // 'settings', 'review', 'issue', 'logout'
+  saveDebugInfo: false
 };
 
 export function get() {
@@ -53,8 +54,17 @@ export function reset() {
   chrome.storage.sync.remove(CONFIG_KEY);
 }
 
+export function onChanged(cb) {
+  chrome.storage.onChanged.addListener((changes, areaName) => {
+    if (areaName === 'sync' && CONFIG_KEY in changes) {
+      cb(changes[CONFIG_KEY].newValue);
+    }
+  });
+}
+
 export default {
   get,
   set,
-  reset
+  reset,
+  onChanged
 };

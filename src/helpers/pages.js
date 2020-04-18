@@ -18,5 +18,8 @@ export default {
   },
   support() {
     openUrl(SUPPORT_URL);
+  },
+  log() {
+    openUrl(chrome.runtime.getURL('log.html'));
   }
 };

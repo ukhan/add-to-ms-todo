@@ -117,6 +117,9 @@
     <el-form-item :label="t('NotifyOnSuccess')" label-width="350px">
       <el-switch v-model="config.notifyOnSuccess"></el-switch>
     </el-form-item>
+    <el-form-item :label="t('SaveDebugInfo')" label-width="350px">
+      <el-switch v-model="config.saveDebugInfo"></el-switch>
+    </el-form-item>
 
     <el-form-item class="buttons" :label="t('ShowButtons')">
       <el-checkbox-group size="small" v-model="config.showButtons">
@@ -155,7 +158,7 @@
 }
 .options-form {
   width: 480px;
-  margin-bottom: 14px;
+  margin-left: 25px;
 }
 .el-form-item__content,
 .el-form-item__label {
@@ -196,7 +199,7 @@
   margin-left: 16px;
 }
 .buttons {
-  margin-top: 30px;
+  margin-top: 20px;
 }
 .buttons .el-checkbox-group {
   margin-left: 10px;
@@ -209,6 +212,7 @@
   font-size: 0.6rem;
   color: #909399;
   margin-top: 18px;
+  margin-bottom: 14px;
 }
 .love {
   color: #e20338;

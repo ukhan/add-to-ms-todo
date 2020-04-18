@@ -19,7 +19,8 @@ module.exports = (env, argv) => {
     entry: {
       background: './src/background.js',
       popup: './src/popup/popup.js',
-      options: './src/options/options.js'
+      options: './src/options/options.js',
+      log: './src/log/log.js'
     },
     resolve: {
       alias: {
@@ -66,6 +67,11 @@ module.exports = (env, argv) => {
         filename: 'options.html',
         template: 'src/options/options.html',
         chunks: ['options']
+      }),
+      new HtmlWebpackPlugin({
+        filename: 'log.html',
+        template: 'src/log/log.html',
+        chunks: ['log']
       }),
       new CopyPlugin([
         { from: 'src/icons', to: 'icons' },

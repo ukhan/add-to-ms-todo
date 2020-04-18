@@ -2,7 +2,9 @@ import { bgAuth, bgMe, bgRefreshToken } from './helpers/auth';
 import { currentLocale, t } from './helpers/i18n';
 import { bgGetFolders, bgAddTask, quickAddTask } from './helpers/task';
 import { closeNotification } from './helpers/notification';
+import config from './helpers/config';
 import pages from './helpers/pages';
+import log from './helpers/log';
 
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
@@ -25,7 +27,30 @@ chrome.runtime.onInstalled.addListener(() => {
     title: t('QuickAddCommandDescription'),
     contexts: ['page', 'selection', 'link', 'image']
   });
+
+  config.get().then(cfg => {
+    if (cfg.saveDebugInfo) {
+      createDebugMenu();
+    }
+  });
 });
+
+config.onChanged(cfg => {
+  if (cfg.saveDebugInfo) {
+    createDebugMenu();
+  } else {
+    log.clear();
+    chrome.contextMenus.remove('VIEW_DEBUG_INFO');
+  }
+});
+
+function createDebugMenu() {
+  chrome.contextMenus.create({
+    id: 'VIEW_DEBUG_INFO',
+    title: t('ViewDebugInfo'),
+    contexts: ['browser_action']
+  });
+}
 
 chrome.contextMenus.onClicked.addListener(info => {
   switch (info.menuItemId) {
@@ -37,6 +62,9 @@ chrome.contextMenus.onClicked.addListener(info => {
       break;
     case 'OPEN_SUPPORT_PAGE':
       pages.support();
+      break;
+    case 'VIEW_DEBUG_INFO':
+      pages.log();
       break;
     case 'QUICK_ADD_TASK':
       quickAddTask(info);

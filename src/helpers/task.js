@@ -28,18 +28,23 @@ export async function getFolders() {
 }
 
 export async function bgGetFolders(access_token) {
+  let config = await getConfig();
   let url = `${baseUrl}/taskfolders`;
   let folders = [];
 
   try {
     do {
-      let chunkData = await woodpeckerFetch(url, {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-          'Content-Type': 'application/json'
-        }
-      });
+      let chunkData = await woodpeckerFetch(
+        url,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+            'Content-Type': 'application/json'
+          }
+        },
+        { debug: config.saveDebugInfo }
+      );
       let chunkFolders = chunkData.value.map(folder => {
         return {
           id: folder.Id,
@@ -120,18 +125,19 @@ export async function addTask(task) {
 }
 
 export async function bgAddTask(access_token, task) {
+  let config = await getConfig();
   let url =
-      'list' in task
-        ? `${baseUrl}/taskfolders('${task.list}')/tasks`
-        : `${baseUrl}/tasks`,
-    T = {
-      Subject: task.title,
-      Body: {
-        Content: task.description,
-        ContentType: 'Text'
-      },
-      Importance: task.importance ? 'High' : 'Normal'
-    };
+    'list' in task
+      ? `${baseUrl}/taskfolders('${task.list}')/tasks`
+      : `${baseUrl}/tasks`;
+  let T = {
+    Subject: task.title,
+    Body: {
+      Content: task.description,
+      ContentType: 'Text'
+    },
+    Importance: task.importance ? 'High' : 'Normal'
+  };
 
   if (task.reminder) {
     T.IsReminderOn = true;
@@ -151,7 +157,7 @@ export async function bgAddTask(access_token, task) {
       },
       body: JSON.stringify(T)
     },
-    { timeout: null }
+    { timeout: null, debug: config.saveDebugInfo }
   );
 }
 

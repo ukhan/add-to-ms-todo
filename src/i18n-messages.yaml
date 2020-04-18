@@ -203,3 +203,13 @@ CreatedOnPage:
   en: Created on the page
   uk: Сворено на сторінці
   ru: Создано на странице
+
+SaveDebugInfo:
+  en: Save debug info
+  uk: Зберігати налагоджувальну інформацію
+  ru: Сохранять отладочную информацию
+
+ViewDebugInfo:
+  en: View Debug Info
+  uk: Переглянути налагоджувальну інформацію
+  ru: Посмотреть отладочную информацию

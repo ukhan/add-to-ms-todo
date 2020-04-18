@@ -1,3 +1,5 @@
+import log from './log';
+
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 export function safeJson(response) {
@@ -14,7 +16,7 @@ function timeoutFetch(url, options, timeout = null) {
       fetch(url, options),
       new Promise((_, reject) =>
         setTimeout(
-          () => reject({ status: 408, statusText: 'Timeout reached.' }),
+          () => reject({ status: 408, statusText: 'Timeout reached' }),
           timeout
         )
       )
@@ -31,7 +33,8 @@ export function woodpeckerFetch(
     limit = 5,
     delay = 200,
     statusCodes = [408, 413, 429, 500, 502, 503, 504],
-    timeout = 10000
+    timeout = 10000,
+    debug = false
   } = {}
 ) {
   const repeat = () =>
@@ -40,15 +43,20 @@ export function woodpeckerFetch(
         limit: limit - 1,
         delay,
         statusCodes,
-        timeout
+        timeout,
+        debug
       });
     });
+
+  if (debug) log.addRequest(limit, options.method, url, options.body);
 
   return timeoutFetch(url, options, timeout)
     .then(response => {
       if (response.ok) {
+        if (debug) log.addResponse('Ok');
         return response.json();
       } else {
+        if (debug) log.addResponse(response);
         if (statusCodes.indexOf(response.status) !== -1 && limit > 1) {
           return repeat();
         } else {
@@ -57,6 +65,8 @@ export function woodpeckerFetch(
       }
     })
     .catch(error => {
+      if (debug) log.addResponse(error);
+
       if (limit > 1) {
         return repeat();
       } else {
