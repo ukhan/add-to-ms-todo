@@ -318,12 +318,13 @@ export default {
     },
 
     async loadLists() {
-      this.lists = await getFolders();
-      let lists_ids = this.lists.map(list => list.id);
-      if (lists_ids.indexOf(this.config.listDefault) === -1) {
-        let defaultList = this.lists.filter(list => list.isDefault);
-        this.config.listDefault = defaultList[0].id;
-      }
+      chrome.storage.local.get(['folders'], async res => {
+        this.lists = res.folders || [];
+        let folders = await getFolders();
+        if (folders.length) {
+          this.lists = folders;
+        }
+      });
     },
 
     t,
