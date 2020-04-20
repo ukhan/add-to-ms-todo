@@ -1,5 +1,8 @@
 import log from './log';
 
+const TIMEOUT_INIT = 3000;
+const TIMEOUT_STEP = 2000;
+
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 export function safeJson(response) {
@@ -33,22 +36,22 @@ export function woodpeckerFetch(
     limit = 5,
     delay = 200,
     statusCodes = [408, 413, 429, 500, 502, 503, 504],
-    timeout = 10000,
+    timeout = TIMEOUT_INIT,
     debug = false
   } = {}
 ) {
-  const repeat = () =>
+  const repeat = status =>
     wait(delay).then(() => {
       return woodpeckerFetch(url, options, {
         limit: limit - 1,
         delay,
         statusCodes,
-        timeout,
+        timeout: status === 408 ? timeout + TIMEOUT_STEP : timeout,
         debug
       });
     });
 
-  if (debug) log.addRequest(limit, options.method, url, options.body);
+  if (debug) log.addRequest(limit, timeout, options.method, url, options.body);
 
   return timeoutFetch(url, options, timeout)
     .then(response => {
@@ -58,7 +61,7 @@ export function woodpeckerFetch(
       } else {
         if (debug) log.addResponse(response);
         if (statusCodes.indexOf(response.status) !== -1 && limit > 1) {
-          return repeat();
+          return repeat(response.status);
         } else {
           throw response;
         }
@@ -68,7 +71,7 @@ export function woodpeckerFetch(
       if (debug) log.addResponse(error);
 
       if (limit > 1) {
-        return repeat();
+        return repeat(error.status);
       } else {
         throw error;
       }

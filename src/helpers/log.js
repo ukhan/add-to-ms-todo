@@ -16,20 +16,16 @@ export async function add(entry) {
   }
 }
 
-export function addRequest(limit, method, url, body = null) {
+export function addRequest(limit, timeout, method, url, body = null) {
   let entry = {
     Request: `${method} ${url}`,
-    Meta: `${dt()} ${limit} ${VERSION}`
+    Meta: `${dt()} ${limit}:${timeout} ${VERSION}`
   };
   if (body) entry['body'] = JSON.parse(body);
   add(entry);
 }
 
 export function addResponse(response) {
-  // let entry = {
-  //   event: `Response / ${dt()}`,
-  //   response
-  // };
   let entry = {
     Response: response,
     Meta: dt()
