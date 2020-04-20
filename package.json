@@ -1,6 +1,6 @@
 {
   "name": "add-to-ms-todo",
-  "version": "0.11.1",
+  "version": "0.12.0",
   "scripts": {
     "dev": "webpack --mode=development",
     "dev:watch": "webpack --mode=development --watch",
@@ -18,7 +18,7 @@
   "private": true,
   "dependencies": {
     "crypto-js": "^3.3.0",
-    "element-ui": "^2.13.0",
+    "element-ui": "^2.13.1",
     "randomstring": "^1.1.5",
     "url-parse": "^1.4.7",
     "vue": "^2.6.10"
@@ -37,7 +37,7 @@
     "eslint": "^6.7.0",
     "eslint-config-prettier": "^6.10.1",
     "eslint-plugin-import": "^2.20.2",
-    "fetch-mock-jest": "^1.2.5",
+    "fetch-mock-jest": "^1.2.7",
     "file-loader": "^5.1.0",
     "html-webpack-plugin": "^3.2.0",
     "jest": "^24.9.0",
@@ -46,7 +46,7 @@
     "optimize-css-assets-webpack-plugin": "^5.0.3",
     "postcss-loader": "^3.0.0",
     "prettier": "^1.19.1",
-    "style-loader": "^1.1.3",
+    "style-loader": "^1.1.4",
     "terser-webpack-plugin": "^1.4.1",
     "url-loader": "^3.0.0",
     "vue-loader": "^15.9.1",
