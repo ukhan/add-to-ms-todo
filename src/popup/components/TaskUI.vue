@@ -19,6 +19,19 @@
               :value="l.id"
             >
             </el-option>
+            <el-option
+              key="0"
+              :label="t('Tasks')"
+              :value="null"
+              v-if="!lists.length"
+            ></el-option>
+            <el-option
+              key="-1"
+              :label="t('FailedLoadTaskLists')"
+              value="lists_not_loaded"
+              :disabled="true"
+              v-if="!lists.length"
+            ></el-option>
           </el-select>
         </el-form-item>
       </el-col>
@@ -237,10 +250,10 @@ export default {
       let task = {
         title: this.title,
         description: this.description,
-        list: this.list,
         reminder: this.reminderDateTime,
         importance: this.importance
       };
+      if (this.list) task['list'] = this.list;
       this.inProcess = true;
       if (this.config.useLastUsedList) {
         this.config.listDefault = this.list;

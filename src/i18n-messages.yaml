@@ -213,3 +213,13 @@ ViewDebugInfo:
   en: View Debug Info
   uk: Переглянути налагоджувальну інформацію
   ru: Посмотреть отладочную информацию
+
+Tasks:
+  en: Tasks
+  uk: Задачі
+  ru: Задачи
+
+FailedLoadTaskLists:
+  en: Failed to load all task lists
+  uk: Не вдалось завантажити всі списки задач
+  ru: Не удалось загрузить все списки задач
