@@ -20,7 +20,9 @@ export async function getFolders() {
         }
 
         let folders = response && 'folders' in response ? response.folders : [];
-        chrome.storage.local.set({ folders });
+        if (folders.length) {
+          chrome.storage.local.set({ folders });
+        }
         resolve(folders);
       }
     );
