@@ -40,6 +40,8 @@ export function woodpeckerFetch(
     debug = false
   } = {}
 ) {
+  options['credentials'] = 'omit';
+
   const repeat = status =>
     wait(delay).then(() => {
       return woodpeckerFetch(url, options, {
