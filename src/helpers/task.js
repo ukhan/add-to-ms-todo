@@ -31,6 +31,7 @@ export async function getFolders() {
 
 export async function bgGetFolders(access_token) {
   let config = await getConfig();
+  let debug = config.saveDebugInfo;
   let url = `${baseUrl}/taskfolders?top=25`;
   let folders = [];
 
@@ -45,8 +46,9 @@ export async function bgGetFolders(access_token) {
             'Content-Type': 'application/json'
           }
         },
-        { debug: config.saveDebugInfo }
+        { debug }
       );
+      if (debug) console.log('[1] chunkData:', chunkData);
       let chunkFolders = chunkData.value.map(folder => {
         return {
           id: folder.Id,
@@ -54,6 +56,7 @@ export async function bgGetFolders(access_token) {
           isDefault: folder.IsDefaultFolder
         };
       });
+      if (debug) console.log('[2] chunkFolders:', chunkFolders);
       folders = folders.concat(chunkFolders);
       url = chunkData['@odata.nextLink'] || '';
     } while (url !== '');
@@ -65,7 +68,7 @@ export async function bgGetFolders(access_token) {
     }
     notification(err);
   }
-
+  if (debug) console.log('[3] folders:', folders);
   return folders;
 }
 
