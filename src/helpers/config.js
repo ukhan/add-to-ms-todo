@@ -14,6 +14,8 @@ const defaultConfig = {
   firstDayOfWeek: isCyrillic ? 1 : 7,
   listDefault: '',
   useLastUsedList: false,
+  showReminderDate: true,
+  showDueDate: false,
   notifyOnSuccess: true,
   showButtons: ['settings'], // 'settings', 'review', 'issue', 'logout'
   saveDebugInfo: false

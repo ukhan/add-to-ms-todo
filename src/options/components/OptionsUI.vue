@@ -114,6 +114,12 @@
     <el-form-item :label="t('RememberLastUsedList')" label-width="350px">
       <el-switch v-model="config.useLastUsedList"></el-switch>
     </el-form-item>
+    <el-form-item :label="t('ShowReminderDate')" label-width="350px">
+      <el-switch v-model="config.showReminderDate"></el-switch>
+    </el-form-item>
+    <el-form-item :label="t('ShowDueDate')" label-width="350px">
+      <el-switch v-model="config.showDueDate"></el-switch>
+    </el-form-item>
     <el-form-item :label="t('NotifyOnSuccess')" label-width="350px">
       <el-switch v-model="config.notifyOnSuccess"></el-switch>
     </el-form-item>

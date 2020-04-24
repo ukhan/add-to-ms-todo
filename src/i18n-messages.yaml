@@ -40,14 +40,14 @@ Importance:
   ru: Важность
 
 ReminderDate:
-  en: Date
-  uk: Дата
-  ru: Дата
+  en: Date Reminder
+  uk: Дата нагадування
+  ru: Дата напоминания
 
 ReminderTime:
-  en: and time of reminder
-  uk: та час нагадування
-  ru: и время напоминания
+  en: Reminder time
+  uk: Час нагадування
+  ru: Время напоминания
 
 SaveTask:
   en: Add Task
@@ -223,3 +223,18 @@ FailedLoadTaskLists:
   en: Failed to load all task lists
   uk: Не вдалось завантажити всі списки задач
   ru: Не удалось загрузить все списки задач
+
+ShowReminderDate:
+  en: Show Reminder date
+  uk: Показати дату нагадування
+  ru: Показать дату напоминания
+
+ShowDueDate:
+  en: Show Due date
+  uk: Показати дату виконання
+  ru: Показать дату выполнения
+
+DueDate:
+  en: Due date
+  uk: Дата виконання
+  ru: Дата выполнения

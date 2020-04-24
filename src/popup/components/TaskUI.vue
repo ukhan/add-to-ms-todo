@@ -49,7 +49,12 @@
       </el-col>
     </el-row>
 
-    <ReminderFormItem v-model="reminderDateTime" />
+    <ReminderFormItem
+      v-model="reminderDateTime"
+      v-if="config.showReminderDate"
+    />
+
+    <DueFormItem v-model="dueDate" v-if="config.showDueDate" />
 
     <el-row :gutter="8">
       <el-col :span="15">
@@ -157,6 +162,7 @@ import { set as setConfig } from '@/helpers/config';
 
 import TextareaFormItem from './TextareaFormItem';
 import ReminderFormItem from './ReminderFormItem';
+import DueFormItem from './DueFormItem';
 import ServiceButtons from './ServiceButtons';
 
 export default {
@@ -179,6 +185,7 @@ export default {
       description: '',
       list: '',
       reminderDateTime: '',
+      dueDate: '',
       importance: false,
       inProcess: false,
       config: this.$root.config
@@ -251,6 +258,7 @@ export default {
         title: this.title,
         description: this.description,
         reminder: this.reminderDateTime,
+        due: this.dueDate,
         importance: this.importance
       };
       if (this.list) task['list'] = this.list;
@@ -294,6 +302,7 @@ export default {
   components: {
     TextareaFormItem,
     ReminderFormItem,
+    DueFormItem,
     ServiceButtons
   }
 };

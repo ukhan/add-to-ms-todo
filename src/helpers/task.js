@@ -152,6 +152,13 @@ export async function bgAddTask(access_token, task) {
     };
   }
 
+  if (task.due) {
+    T.DueDateTime = {
+      DateTime: task.due,
+      TimeZone: currentTimeZone()
+    };
+  }
+
   return woodpeckerFetch(
     url,
     {
