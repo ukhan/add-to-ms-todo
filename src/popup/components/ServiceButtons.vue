@@ -77,7 +77,13 @@
     ></el-button>
 
     <div class="made-with-love" v-show="noButtonsVisible">
-      <div>ver {{ version }}</div>
+      <div>
+        <a
+          href="https://github.com/ukhan/add-to-ms-todo/blob/master/CHANGELOG.md"
+          target="_blank"
+          >v {{ version }}</a
+        >
+      </div>
       <div>
         Made with
         <span class="love">❤</span> in

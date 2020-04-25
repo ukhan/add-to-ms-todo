@@ -144,7 +144,12 @@
       </el-checkbox-group>
     </el-form-item>
     <div class="made-with-love">
-      ver {{ version }} • Made with <span class="love">❤</span> in
+      <a
+        href="https://github.com/ukhan/add-to-ms-todo/blob/master/CHANGELOG.md"
+        target="_blank"
+        >v {{ version }}</a
+      >
+      • Made with <span class="love">❤</span> in
       <a href="https://madewithlove.in.ua">
         <img
           class="Ukraine"
