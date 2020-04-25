@@ -150,7 +150,7 @@
         >v {{ version }}</a
       >
       • Made with <span class="love">❤</span> in
-      <a href="https://madewithlove.in.ua">
+      <a href="https://madewithlove.in.ua" target="_blank">
         <img
           class="Ukraine"
           src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAuSURBVDhPYxgGQHHa5ygg/k8mjho1AGjAn+umUX9vmP4nB4P0jhoANGCoAwYGABPEurh8awULAAAAAElFTkSuQmCC"
