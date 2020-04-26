@@ -40,7 +40,9 @@ config.onChanged(cfg => {
     createDebugMenu();
   } else {
     log.clear();
-    chrome.contextMenus.remove('VIEW_DEBUG_INFO');
+    chrome.contextMenus.remove('VIEW_DEBUG_INFO', () => {
+      chrome.runtime.lastError;
+    });
   }
 });
 
