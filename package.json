@@ -1,6 +1,6 @@
 {
   "name": "add-to-ms-todo",
-  "version": "0.13.0",
+  "version": "0.14.0",
   "scripts": {
     "dev": "webpack --mode=development",
     "dev:watch": "webpack --mode=development --watch",
@@ -19,6 +19,7 @@
   "dependencies": {
     "crypto-js": "^3.3.0",
     "element-ui": "^2.13.1",
+    "lodash.debounce": "^4.0.8",
     "randomstring": "^1.1.5",
     "url-parse": "^1.4.7",
     "vue": "^2.6.10"

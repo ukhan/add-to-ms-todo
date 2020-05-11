@@ -1,5 +1,10 @@
 # Release Notes
 
+## v0.14.0 (2020-05-11)
+
+- Saving the changes made to the task information and restoring them
+  the next time the extension is called for the same page.
+
 ## v0.13.0 (2020-04-25)
 
 - Added Due Date (deactivated by default).

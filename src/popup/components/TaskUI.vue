@@ -1,11 +1,11 @@
 <template>
   <el-form label-position="top" size="small" class="add-task-form">
-    <TextareaFormItem :label="t('Title')" :rows="2" v-model="title" />
+    <TextareaFormItem :label="t('Title')" :rows="2" v-model="task.title" />
 
     <TextareaFormItem
       :label="t('Description')"
       :rows="4"
-      v-model="description"
+      v-model="task.description"
     />
 
     <el-row :gutter="8">
@@ -39,22 +39,22 @@
       <el-col :span="2">
         <i
           :title="t('Importance')"
-          @click="importance = !importance"
+          @click="task.importance = !task.importance"
           class="importance-button"
           :class="{
-            'el-icon-star-off': !importance,
-            'el-icon-star-on': importance
+            'el-icon-star-off': !task.importance,
+            'el-icon-star-on': task.importance
           }"
         ></i>
       </el-col>
     </el-row>
 
     <ReminderFormItem
-      v-model="reminderDateTime"
+      v-model="task.reminderDateTime"
       v-if="config.showReminderDate"
     />
 
-    <DueFormItem v-model="dueDate" v-if="config.showDueDate" />
+    <DueFormItem v-model="task.dueDate" v-if="config.showDueDate" />
 
     <el-row :gutter="8">
       <el-col :span="15">
@@ -153,12 +153,15 @@
 </style>
 
 <script>
+const debounce = require('lodash.debounce');
+
 import { logout } from '@/helpers/auth';
 import { addTask } from '@/helpers/task';
 import { t } from '@/helpers/i18n';
 import { notification, closeNotification } from '@/helpers/notification';
 import getTabInfo from '@/helpers/tab';
 import { set as setConfig } from '@/helpers/config';
+import { preSave, preLoad, preDelete } from '@/helpers/presave';
 
 import TextareaFormItem from './TextareaFormItem';
 import ReminderFormItem from './ReminderFormItem';
@@ -181,12 +184,15 @@ export default {
 
   data() {
     return {
-      title: '',
-      description: '',
-      list: '',
-      reminderDateTime: '',
-      dueDate: '',
-      importance: false,
+      task: {
+        title: '',
+        description: '',
+        list: '',
+        reminderDateTime: '',
+        dueDate: '',
+        importance: false
+      },
+      tabInfo: {},
       inProcess: false,
       config: this.$root.config
     };
@@ -194,29 +200,29 @@ export default {
 
   computed: {
     titleEmpty() {
-      return !this.title.trim().length;
+      return !this.task.title.trim().length;
     },
 
     lst: {
       get() {
         if (!this.lists.length) return null;
 
-        if (this.list == '') {
+        if (this.task.list == '') {
           let lists_ids = this.lists.map(list => list.id);
           if (lists_ids.indexOf(this.config.listDefault) === -1) {
             let defaultList = this.lists.filter(list => list.isDefault);
             this.config.listDefault = defaultList[0].id;
-            this.list = defaultList[0].id;
+            this.task.list = defaultList[0].id;
           } else {
-            this.list = this.config.listDefault;
+            this.task.list = this.config.listDefault;
           }
         }
 
-        return this.list;
+        return this.task.list;
       },
 
       set(list) {
-        this.list = list;
+        this.task.list = list;
       }
     },
 
@@ -235,16 +241,31 @@ export default {
         setConfig(config);
       },
       deep: true
+    },
+
+    task: {
+      handler(task) {
+        this.debouncedHandleTaskChanges(task);
+      },
+      deep: true
     }
   },
 
   created() {
-    getTabInfo().then(tabInfo => {
-      this.title = tabInfo.title;
-      this.description = tabInfo.selected.trim().length
-        ? `${tabInfo.selected}\n\n ${tabInfo.url}`
-        : tabInfo.url;
-    });
+    this.debouncedHandleTaskChanges = debounce(this.handleTaskChanges, 500);
+    getTabInfo()
+      .then(this.preLoad)
+      .then(data => {
+        this.tabInfo = data.tabInfo;
+        if (data.task) {
+          this.task = data.task;
+        } else {
+          this.task.title = this.tabInfo.title;
+          this.task.description = this.tabInfo.selected.trim().length
+            ? `${this.tabInfo.selected}\n\n ${this.tabInfo.url}`
+            : this.tabInfo.url;
+        }
+      });
   },
 
   methods: {
@@ -253,15 +274,19 @@ export default {
       this.$emit('logout');
     },
 
+    handleTaskChanges(task) {
+      this.preSave(task, this.tabInfo);
+    },
+
     save() {
       let task = {
-        title: this.title,
-        description: this.description,
-        reminder: this.reminderDateTime,
-        due: this.dueDate,
-        importance: this.importance
+        title: this.task.title,
+        description: this.task.description,
+        reminder: this.task.reminderDateTime,
+        due: this.task.dueDate,
+        importance: this.task.importance
       };
-      if (this.list) task['list'] = this.list;
+      if (this.task.list) task['list'] = this.task.list;
       this.inProcess = true;
       if (this.config.useLastUsedList) {
         this.config.listDefault = this.list;
@@ -275,6 +300,7 @@ export default {
       }
       addTask(task)
         .then(response => {
+          this.preDelete(this.tabInfo.id);
           this.inProcess = false;
           if (this.config.notifyOnSuccess) {
             notification(this.t('SuccessNotification'), false, () => {
@@ -296,7 +322,10 @@ export default {
         });
     },
 
-    t
+    t,
+    preSave,
+    preLoad,
+    preDelete
   },
 
   components: {

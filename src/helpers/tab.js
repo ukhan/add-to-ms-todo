@@ -8,14 +8,16 @@ export default function getTabInfo() {
         if (!tabs.length) {
           resolve({
             title: '',
-            url: ''
+            url: '',
+            id: null
           });
         }
 
         let tab = tabs[0];
         resolve({
           title: tab.title,
-          url: tab.url
+          url: tab.url,
+          id: tab.id
         });
       });
     }),

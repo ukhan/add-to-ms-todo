@@ -2,6 +2,7 @@ import { bgAuth, bgMe, bgRefreshToken } from './helpers/auth';
 import { currentLocale, t } from './helpers/i18n';
 import { bgGetFolders, bgAddTask, quickAddTask } from './helpers/task';
 import { closeNotification } from './helpers/notification';
+import { preDelete } from './helpers/presave';
 import config from './helpers/config';
 import pages from './helpers/pages';
 import log from './helpers/log';
@@ -110,6 +111,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     closeNotification(request.id);
   }
 });
+
+chrome.tabs.onRemoved.addListener(preDelete);
 
 setSurvey(currentLocale);
 
