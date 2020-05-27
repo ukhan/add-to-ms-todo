@@ -1,4 +1,4 @@
-const TODO_URL = 'https://to-do.microsoft.com/';
+const TODO_URL = 'https://to-do.live.com/tasks/';
 const WEBSTORE_BASE_URL = 'https://chrome.google.com/webstore/detail';
 const EXT_SLUG = 'add-to-microsoft-to-do';
 const EXT_ID = 'loblkkbfciiklgoblkigehhghfjfjede';

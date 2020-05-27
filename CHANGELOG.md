@@ -1,5 +1,9 @@
 # Release Notes
 
+## v0.14.1 (2020-05-27)
+
+- The URL of the To Do web application in the context menu has been fixed.
+
 ## v0.14.0 (2020-05-11)
 
 - Saving the changes made to the task information and restoring them
