@@ -123,7 +123,6 @@
   content: '';
   display: block;
   height: 19px;
-  background: #fff;
   position: absolute;
   top: 1px;
   left: 4px;
@@ -133,7 +132,6 @@
   content: '';
   display: block;
   height: 4px;
-  background: #fff;
   position: absolute;
   bottom: 1px;
   left: 4px;

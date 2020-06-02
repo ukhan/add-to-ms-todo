@@ -40,6 +40,10 @@ module.exports = (env, argv) => {
           use: ['style-loader', 'css-loader', 'postcss-loader']
         },
         {
+          test: /\.s[ac]ss$/i,
+          use: ['style-loader', 'css-loader', 'sass-loader']
+        },
+        {
           test: /\.vue$/,
           loader: 'vue-loader'
         },

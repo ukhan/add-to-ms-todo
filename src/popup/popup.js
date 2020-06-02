@@ -5,6 +5,8 @@ import localeRU from 'element-ui/lib/locale/lang/ru-RU';
 import localeEN from 'element-ui/lib/locale/lang/en';
 import 'element-ui/lib/theme-chalk/reset.css';
 import 'element-ui/lib/theme-chalk/index.css';
+import '../theme/dark.scss';
+import setThemeSwitcher from '../theme/theme-switcher';
 import { defaultLocale, currentLocale } from '../helpers/i18n';
 import { get as getConfig } from '@/helpers/config';
 import UI from './components/UI.vue';
@@ -36,3 +38,4 @@ new Vue({
 });
 
 document.documentElement.lang = currentLocale;
+setThemeSwitcher();

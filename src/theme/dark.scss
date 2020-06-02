@@ -1,0 +1,66 @@
+$red: #b11127;
+$blue: #185abd;
+$blue-light: lighten($blue, 10);
+$white: #fff;
+$bg-color: #292a2d;
+$button-bg-alfa: 0.1;
+
+.dark {
+  background-color: $bg-color;
+
+  textarea,
+  input[type='text'] {
+    background-color: $bg-color;
+    border-color: #5f6368;
+    color: #e8eaed;
+  }
+
+  .el-input__inner {
+    &:hover {
+      border-color: #c0c4cc;
+    }
+  }
+
+  .el-button.is-plain {
+    border-color: rgba($white, 0.1) !important;
+  }
+
+  .el-button--danger.is-plain {
+    color: $red;
+    background-color: rgba($red, 0.1);
+
+    &:hover {
+      color: $white;
+      background-color: $red;
+    }
+  }
+
+  .el-button--info.is-plain {
+    background-color: $bg-color;
+
+    &:hover {
+      background-color: lighten($bg-color, 10);
+    }
+  }
+
+  .el-button--primary.is-plain {
+    background-color: rgba($blue, 0.1);
+
+    &:hover {
+      border-color: $blue;
+      background-color: $blue;
+    }
+  }
+
+  .el-button--primary {
+    color: darken($white, 10);
+    border-color: $blue;
+    background-color: $blue;
+
+    &:hover {
+      color: $white;
+      border-color: $blue-light;
+      background-color: $blue-light;
+    }
+  }
+}

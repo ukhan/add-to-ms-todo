@@ -1,5 +1,9 @@
 # Release Notes
 
+## v0.15.0 (2020-06-03)
+
+- Dark theme.
+
 ## v0.14.1 (2020-05-27)
 
 - The URL of the To Do web application in the context menu has been fixed.
