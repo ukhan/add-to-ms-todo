@@ -22,7 +22,7 @@ describe('woodpeckerFetch', () => {
   test('timeout issue', async () => {
     await expect(
       woodpeckerFetch(`${base}/timeout-3000`, {}, { limit: 1, timeout: 2000 })
-    ).rejects.toEqual({ status: 408, statusText: 'Timeout reached.' });
+    ).rejects.toEqual({ status: 408, statusText: 'Timeout reached' });
   });
 
   test('overcomes one timeout', async () => {
