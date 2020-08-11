@@ -7,7 +7,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const WebpackExtensionManifestPlugin = require('webpack-extension-manifest-plugin');
-const merge = require('webpack-merge');
+const { merge } = require('webpack-merge');
 const resolve = require('path').resolve;
 const webpack = require('webpack');
 
@@ -20,32 +20,32 @@ module.exports = (env, argv) => {
       background: './src/background.js',
       popup: './src/popup/popup.js',
       options: './src/options/options.js',
-      log: './src/log/log.js'
+      log: './src/log/log.js',
     },
     resolve: {
       alias: {
-        '@': resolve(__dirname, 'src')
+        '@': resolve(__dirname, 'src'),
       },
-      extensions: ['.js', '.vue', '.json']
+      extensions: ['.js', '.vue', '.json'],
     },
     module: {
       rules: [
         {
           test: /\.js$/,
           loader: 'babel-loader',
-          exclude: /node_modules/
+          exclude: /node_modules/,
         },
         {
           test: /\.css$/,
-          use: ['style-loader', 'css-loader', 'postcss-loader']
+          use: ['style-loader', 'css-loader', 'postcss-loader'],
         },
         {
           test: /\.s[ac]ss$/i,
-          use: ['style-loader', 'css-loader', 'sass-loader']
+          use: ['style-loader', 'css-loader', 'sass-loader'],
         },
         {
           test: /\.vue$/,
-          loader: 'vue-loader'
+          loader: 'vue-loader',
         },
         {
           test: /\.(png|jpg|jpeg|gif|eot|ttf|woff|woff2|svg|svgz)(\?.+)?$/,
@@ -53,43 +53,45 @@ module.exports = (env, argv) => {
             {
               loader: 'url-loader',
               options: {
-                limit: 10000
-              }
-            }
-          ]
-        }
-      ]
+                limit: 10000,
+              },
+            },
+          ],
+        },
+      ],
     },
     plugins: [
       new Dotenv(),
       new HtmlWebpackPlugin({
         filename: 'popup.html',
         template: 'src/popup/popup.html',
-        chunks: ['popup']
+        chunks: ['popup'],
       }),
       new HtmlWebpackPlugin({
         filename: 'options.html',
         template: 'src/options/options.html',
-        chunks: ['options']
+        chunks: ['options'],
       }),
       new HtmlWebpackPlugin({
         filename: 'log.html',
         template: 'src/log/log.html',
-        chunks: ['log']
+        chunks: ['log'],
       }),
-      new CopyPlugin([
-        { from: 'src/icons', to: 'icons' },
-        { from: 'src/assets', to: 'assets' }
-      ]),
+      new CopyPlugin({
+        patterns: [
+          { from: 'src/icons', to: 'icons' },
+          { from: 'src/assets', to: 'assets' },
+        ],
+      }),
       new MiniCssExtractPlugin({
-        filename: '[name].css'
+        filename: '[name].css',
       }),
       new YamlLocalesWebpackPlugin({
-        messageAdditions: argv.beta ? { extName: ' (beta)' } : {}
+        messageAdditions: argv.beta ? { extName: ' (beta)' } : {},
       }),
       new VueLoaderPlugin(),
-      new webpack.ProgressPlugin()
-    ]
+      new webpack.ProgressPlugin(),
+    ],
   };
 
   if (argv.mode === 'production') {
@@ -101,22 +103,22 @@ module.exports = (env, argv) => {
             new TerserPlugin({
               terserOptions: {
                 output: {
-                  comments: false
-                }
+                  comments: false,
+                },
               },
-              extractComments: false
+              extractComments: false,
             }),
-            new OptimizeCSSAssetsPlugin({})
-          ]
+            new OptimizeCSSAssetsPlugin({}),
+          ],
         },
         plugins: [
           new WebpackExtensionManifestPlugin({
             config: {
               base: manifest,
-              extend: { version: pkg.version }
-            }
-          })
-        ]
+              extend: { version: pkg.version },
+            },
+          }),
+        ],
       },
       config
     );
@@ -134,12 +136,12 @@ module.exports = (env, argv) => {
               key: dotEnv.definitions['process.env.EXTENSION_KEY'].replace(
                 /"/g,
                 ''
-              )
-            }
-          }
-        })
+              ),
+            },
+          },
+        }),
       ],
-      devtool: 'inline-source-map'
+      devtool: 'inline-source-map',
     });
   }
 };
