@@ -1,5 +1,5 @@
 <template>
-  <el-form class="options-form" label-width="180px" slot="label">
+  <el-form class="options-form" label-width="200px" slot="label">
     <el-form-item>
       <template slot="label">
         <i class="el-icon-user" :title="t('Account')"></i>
@@ -134,12 +134,6 @@
       <el-checkbox-group size="small" v-model="config.showButtons">
         <el-checkbox-button label="settings" :title="t('Settings')">
           <i class="el-icon-setting"></i>
-        </el-checkbox-button>
-        <el-checkbox-button label="review" :title="t('RateExtension')">
-          <i class="el-icon-medal-1"></i>
-        </el-checkbox-button>
-        <el-checkbox-button label="issue" :title="t('ReportBug')">
-          <i class="el-icon-warning-outline"></i>
         </el-checkbox-button>
         <el-checkbox-button label="logout" :title="t('Logout')">
           <i class="el-icon-switch-button"></i>

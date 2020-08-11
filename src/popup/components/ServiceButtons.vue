@@ -49,24 +49,6 @@
       plain
     ></el-button>
     <el-button
-      v-if="isReviewButtonVisible"
-      icon="el-icon-medal-1"
-      size="medium"
-      :title="t('RateExtension')"
-      @click="goReviews"
-      type="info"
-      plain
-    ></el-button>
-    <el-button
-      v-if="isIssueButtonVisible"
-      icon="el-icon-warning-outline"
-      size="medium"
-      :title="t('ReportBug')"
-      @click="goSupport"
-      type="info"
-      plain
-    ></el-button>
-    <el-button
       v-if="isSettingsButtonVisible"
       icon="el-icon-setting"
       size="medium"
@@ -133,29 +115,23 @@ export default {
   props: {
     config: {
       type: Object,
-      required: true
+      required: true,
     },
     profile: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
 
   data() {
     return {
-      version: p.version
+      version: p.version,
     };
   },
 
   computed: {
     isSettingsButtonVisible() {
       return this.isButtonVisible('settings', this.config);
-    },
-    isReviewButtonVisible() {
-      return this.isButtonVisible('review', this.config);
-    },
-    isIssueButtonVisible() {
-      return this.isButtonVisible('issue', this.config);
     },
     isLogoutButtonVisible() {
       return this.isButtonVisible('logout', this.config);
@@ -165,7 +141,7 @@ export default {
     },
     noButtonsVisible() {
       return !this.config.showButtons.length;
-    }
+    },
   },
 
   methods: {
@@ -194,7 +170,7 @@ export default {
       this.$emit('logout');
     },
 
-    t
-  }
+    t,
+  },
 };
 </script>

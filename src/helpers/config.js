@@ -17,7 +17,7 @@ const defaultConfig = {
   showReminderDate: true,
   showDueDate: false,
   notifyOnSuccess: true,
-  showButtons: ['settings'], // 'settings', 'review', 'issue', 'logout'
+  showButtons: ['settings'], // 'settings', 'logout'
   quickAddTaskInContextMenu: true,
   saveDebugInfo: false,
 };
