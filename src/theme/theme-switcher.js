@@ -1,7 +1,7 @@
 export default function themeSwitcher() {
   let body = document.body;
   let matcher = window.matchMedia('(prefers-color-scheme: dark)');
-  matcher.addListener(onUpdate);
+  matcher.addEventListener('change', onUpdate);
   onUpdate();
 
   function onUpdate() {
