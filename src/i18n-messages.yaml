@@ -204,6 +204,11 @@ CreatedOnPage:
   uk: Сворено на сторінці
   ru: Создано на странице
 
+QuickAddInContextMenu:
+  en: Quick add in the context menu
+  uk: Швидке додавання в контекстному меню
+  ru: Быстрое добавление в контекстном меню
+
 SaveDebugInfo:
   en: Save debug info
   uk: Зберігати налагоджувальну інформацію

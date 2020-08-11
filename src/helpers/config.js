@@ -18,12 +18,13 @@ const defaultConfig = {
   showDueDate: false,
   notifyOnSuccess: true,
   showButtons: ['settings'], // 'settings', 'review', 'issue', 'logout'
-  saveDebugInfo: false
+  quickAddTaskInContextMenu: true,
+  saveDebugInfo: false,
 };
 
 export function get() {
   return new Promise((resolve, reject) => {
-    chrome.storage.sync.get(CONFIG_KEY, items => {
+    chrome.storage.sync.get(CONFIG_KEY, (items) => {
       if (chrome.runtime.lastError) {
         reject(chrome.runtime.lastError);
       }
@@ -68,5 +69,5 @@ export default {
   get,
   set,
   reset,
-  onChanged
+  onChanged,
 };

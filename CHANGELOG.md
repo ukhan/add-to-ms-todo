@@ -1,5 +1,9 @@
 # Release Notes
 
+## v0.16.0 (2020-08-11)
+
+- Customized "Quick add" in the contextual menu.
+
 ## v0.15.0 (2020-06-03)
 
 - Dark theme.

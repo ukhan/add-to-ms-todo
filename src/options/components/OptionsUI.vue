@@ -123,6 +123,9 @@
     <el-form-item :label="t('NotifyOnSuccess')" label-width="350px">
       <el-switch v-model="config.notifyOnSuccess"></el-switch>
     </el-form-item>
+    <el-form-item :label="t('QuickAddInContextMenu')" label-width="350px">
+      <el-switch v-model="config.quickAddTaskInContextMenu"></el-switch>
+    </el-form-item>
     <el-form-item :label="t('SaveDebugInfo')" label-width="350px">
       <el-switch v-model="config.saveDebugInfo"></el-switch>
     </el-form-item>
@@ -242,7 +245,7 @@ import {
   isAuthenticated,
   login,
   me,
-  logout
+  logout,
 } from '@/helpers/auth';
 import { set as setConfig } from '@/helpers/config';
 import { t, currentLocale } from '@/helpers/i18n';
@@ -261,7 +264,7 @@ export default {
       profile: {},
       lists: [],
       disabledLists: '',
-      version: p.version
+      version: p.version,
     };
   },
 
@@ -281,7 +284,7 @@ export default {
     },
     enTranslate() {
       return !(currentLocale === 'uk' || currentLocale === 'ru');
-    }
+    },
   },
 
   watch: {
@@ -289,8 +292,8 @@ export default {
       handler(config) {
         setConfig(config);
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
 
   methods: {
@@ -329,7 +332,7 @@ export default {
     },
 
     async loadLists() {
-      chrome.storage.local.get(['folders'], async res => {
+      chrome.storage.local.get(['folders'], async (res) => {
         this.lists = res.folders || [];
         let folders = await getFolders();
         if (folders.length) {
@@ -340,9 +343,9 @@ export default {
 
     t,
     padZero,
-    formatTime
+    formatTime,
   },
 
-  components: { TimePicker }
+  components: { TimePicker },
 };
 </script>
