@@ -31,8 +31,6 @@
   },
   "permissions": [
     "identity",
-    "https://login.microsoftonline.com/*",
-    "https://outlook.office.com/*",
     "contextMenus",
     "storage",
     "notifications",
