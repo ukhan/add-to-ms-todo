@@ -14,7 +14,7 @@ export async function getFolders() {
   return new Promise((resolve, reject) => {
     chrome.runtime.sendMessage(
       { action: 'GET_FOLDERS', access_token },
-      response => {
+      (response) => {
         if (chrome.runtime.lastError) {
           reject(chrome.runtime.lastError.message);
         }
@@ -26,7 +26,7 @@ export async function getFolders() {
         resolve(folders);
       }
     );
-  }).catch(message => notification(message));
+  }).catch((message) => notification(message));
 }
 
 export async function bgGetFolders(access_token) {
@@ -43,17 +43,17 @@ export async function bgGetFolders(access_token) {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${access_token}`,
-            'Content-Type': 'application/json'
-          }
+            'Content-Type': 'application/json',
+          },
         },
         { debug }
       );
       if (debug) console.log('[1] chunkData:', chunkData);
-      let chunkFolders = chunkData.value.map(folder => {
+      let chunkFolders = chunkData.value.map((folder) => {
         return {
           id: folder.Id,
           label: folder.Name,
-          isDefault: folder.IsDefaultFolder
+          isDefault: folder.IsDefaultFolder,
         };
       });
       if (debug) console.log('[2] chunkFolders:', chunkFolders);
@@ -97,12 +97,12 @@ export async function quickAddTask(info) {
   return bgAddTask(access_token, task)
     .then(() => {
       if (config.notifyOnSuccess) {
-        notification(t('SuccessNotification')).then(id =>
+        notification(t('SuccessNotification')).then((id) =>
           closeNotification(id)
         );
       }
     })
-    .catch(res => {
+    .catch((res) => {
       let err =
         t('ErrorNotification') + ' – \n' + (res.statusText || `#${res.status}`);
       notification(err);
@@ -115,7 +115,7 @@ export async function addTask(task) {
   return new Promise((resolve, reject) => {
     chrome.runtime.sendMessage(
       { action: 'ADD_TASK', access_token, task },
-      res => {
+      (res) => {
         if (chrome.runtime.lastError) {
           reject(chrome.runtime.lastError.message);
         }
@@ -139,23 +139,23 @@ export async function bgAddTask(access_token, task) {
     Subject: task.title,
     Body: {
       Content: task.description,
-      ContentType: 'Text'
+      ContentType: 'Text',
     },
-    Importance: task.importance ? 'High' : 'Normal'
+    Importance: task.importance ? 'High' : 'Normal',
   };
 
   if (task.reminder) {
     T.IsReminderOn = true;
     T.ReminderDateTime = {
       DateTime: task.reminder,
-      TimeZone: currentTimeZone()
+      TimeZone: currentTimeZone(),
     };
   }
 
   if (task.due) {
     T.DueDateTime = {
       DateTime: task.due,
-      TimeZone: currentTimeZone()
+      TimeZone: currentTimeZone(),
     };
   }
 
@@ -165,9 +165,9 @@ export async function bgAddTask(access_token, task) {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${access_token}`,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(T)
+      body: JSON.stringify(T),
     },
     { timeout: null, debug: config.saveDebugInfo }
   );

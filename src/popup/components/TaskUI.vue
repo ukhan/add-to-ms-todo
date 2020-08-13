@@ -43,7 +43,7 @@
           class="importance-button"
           :class="{
             'el-icon-star-off': !task.importance,
-            'el-icon-star-on': task.importance
+            'el-icon-star-on': task.importance,
           }"
         ></i>
       </el-col>
@@ -172,12 +172,12 @@ export default {
   props: {
     profile: {
       type: Object,
-      required: true
+      required: true,
     },
     lists: {
       type: Array,
-      required: true
-    }
+      required: true,
+    },
   },
 
   data() {
@@ -188,11 +188,11 @@ export default {
         list: '',
         reminderDateTime: '',
         dueDate: '',
-        importance: false
+        importance: false,
       },
       tabInfo: {},
       inProcess: false,
-      config: this.$root.config
+      config: this.$root.config,
     };
   },
 
@@ -206,9 +206,9 @@ export default {
         if (!this.lists.length) return null;
 
         if (this.task.list == '') {
-          let lists_ids = this.lists.map(list => list.id);
+          let lists_ids = this.lists.map((list) => list.id);
           if (lists_ids.indexOf(this.config.listDefault) === -1) {
-            let defaultList = this.lists.filter(list => list.isDefault);
+            let defaultList = this.lists.filter((list) => list.isDefault);
             this.config.listDefault = defaultList[0].id;
             this.task.list = defaultList[0].id;
           } else {
@@ -221,7 +221,7 @@ export default {
 
       set(list) {
         this.task.list = list;
-      }
+      },
     },
 
     lstPlaceholder() {
@@ -230,7 +230,7 @@ export default {
       } else {
         return '';
       }
-    }
+    },
   },
 
   watch: {
@@ -238,22 +238,22 @@ export default {
       handler(config) {
         setConfig(config);
       },
-      deep: true
+      deep: true,
     },
 
     task: {
       handler(task) {
         this.debouncedHandleTaskChanges(task);
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
 
   created() {
     this.debouncedHandleTaskChanges = debounce(this.handleTaskChanges, 500);
     getTabInfo()
       .then(this.preLoad)
-      .then(data => {
+      .then((data) => {
         this.tabInfo = data.tabInfo;
         if (data.task) {
           this.task = data.task;
@@ -282,35 +282,34 @@ export default {
         description: this.task.description,
         reminder: this.task.reminderDateTime,
         due: this.task.dueDate,
-        importance: this.task.importance
+        importance: this.task.importance,
       };
-      if (this.task.list) task['list'] = this.task.list;
-      this.inProcess = true;
-      if (this.config.useLastUsedList) {
-        this.config.listDefault = this.list;
+      if (this.task.list) {
+        task['list'] = this.task.list;
+        if (this.config.useLastUsedList) {
+          this.config.listDefault = this.task.list;
+        }
       }
+      this.inProcess = true;
       if (this.config.useLastUsedTime && this.reminderDateTime) {
         let [d, t] = this.reminderDateTime.split('T');
-        this.config.timeDefault = t
-          .split(':')
-          .splice(0, 2)
-          .join(':');
+        this.config.timeDefault = t.split(':').splice(0, 2).join(':');
       }
       addTask(task)
-        .then(response => {
+        .then((response) => {
           this.preDelete(this.tabInfo.id);
           this.inProcess = false;
           if (this.config.notifyOnSuccess) {
             notification(this.t('SuccessNotification'), false, () => {
               window.close();
-            }).then(id => {
+            }).then((id) => {
               chrome.runtime.sendMessage({ action: 'CLOSE_NOTIFICATION', id });
             });
           } else {
             window.close();
           }
         })
-        .catch(res => {
+        .catch((res) => {
           let err = this.t('ErrorNotification');
           if (res.statusText || res.status) {
             err = err + '\n' + (res.statusText || `#${res.status}`);
@@ -323,14 +322,14 @@ export default {
     t,
     preSave,
     preLoad,
-    preDelete
+    preDelete,
   },
 
   components: {
     TextareaFormItem,
     ReminderFormItem,
     DueFormItem,
-    ServiceButtons
-  }
+    ServiceButtons,
+  },
 };
 </script>

@@ -1,5 +1,9 @@
 # Release Notes
 
+## v0.16.1 (2020-08-13)
+
+- Fixed an error that didn't save the last used list.
+
 ## v0.16.0 (2020-08-11)
 
 - Customized "Quick add" in the contextual menu.
