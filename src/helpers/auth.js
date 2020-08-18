@@ -12,7 +12,7 @@ const redirect_uri = chrome.identity.getRedirectURL();
 const permissions = [
   'https://outlook.office.com/user.read',
   'https://outlook.office.com/tasks.readwrite',
-  'offline_access'
+  'offline_access',
 ];
 const scope = permissions.join('%20');
 
@@ -22,7 +22,7 @@ const scope = permissions.join('%20');
 export const CheckAuthMethod = {
   FAST: 'fast',
   NORMAL: 'normal',
-  FORCE: 'force'
+  FORCE: 'force',
 };
 
 /**
@@ -50,14 +50,14 @@ export function refreshToken(refresh_token) {
   return new Promise((resolve, reject) => {
     chrome.runtime.sendMessage(
       { action: 'REFRESH_TOKEN', refresh_token },
-      response => {
+      (response) => {
         if (chrome.runtime.lastError) {
           reject(chrome.runtime.lastError.message);
         }
         resolve(response.token);
       }
     );
-  }).catch(message => notification(message));
+  }).catch((message) => notification(message));
 }
 
 function isExpired(expiredAt) {
@@ -79,7 +79,7 @@ export async function getToken(force = false, direct = false) {
   const { access_token, expired_at, refresh_token } = await storage.get([
     'access_token',
     'expired_at',
-    'refresh_token'
+    'refresh_token',
   ]);
 
   if ((isExpired(expired_at) || force) && refresh_token) {
@@ -98,27 +98,28 @@ export function bgRefreshToken(refresh_token) {
     fetch(`${oauthURL}/token`, {
       method: 'POST',
       headers: {
-        'Content-type': 'application/x-www-form-urlencoded'
+        'Content-type': 'application/x-www-form-urlencoded',
       },
-      body: `client_id=${clientID}&scope=${scope}&refresh_token=${refresh_token}&grant_type=refresh_token&client_secret=${clientSecret}`
+      credentials: 'omit',
+      body: `client_id=${clientID}&scope=${scope}&refresh_token=${refresh_token}&grant_type=refresh_token&client_secret=${clientSecret}`,
     })
       .then(safeJson)
-      .then(data => {
+      .then((data) => {
         storage.set({
           access_token: data.access_token,
           refresh_token: data.refresh_token,
-          expired_at: timestamp() + data.expires_in
+          expired_at: timestamp() + data.expires_in,
         });
         resolve(data.access_token);
       })
-      .catch(err => reject(err));
-  }).catch(err => {
+      .catch((err) => reject(err));
+  }).catch((err) => {
     storage.remove([
       'access_token',
       'refresh_token',
       'expired_at',
       'name',
-      'email'
+      'email',
     ]);
     notification(err.message);
   });
@@ -126,13 +127,13 @@ export function bgRefreshToken(refresh_token) {
 
 export function login() {
   return new Promise((resolve, reject) => {
-    chrome.runtime.sendMessage({ action: 'AUTH' }, profile => {
+    chrome.runtime.sendMessage({ action: 'AUTH' }, (profile) => {
       if (chrome.runtime.lastError) {
         reject(chrome.runtime.lastError.message);
       }
       resolve(profile);
     });
-  }).catch(message => notification(message));
+  }).catch((message) => notification(message));
 }
 
 export function bgAuth() {
@@ -143,9 +144,9 @@ export function bgAuth() {
     chrome.identity.launchWebAuthFlow(
       {
         url: authURL,
-        interactive: true
+        interactive: true,
       },
-      responseUrl => {
+      (responseUrl) => {
         if (chrome.runtime.lastError) {
           reject(chrome.runtime.lastError.message);
         }
@@ -158,24 +159,25 @@ export function bgAuth() {
         fetch(`${oauthURL}/token`, {
           method: 'POST',
           headers: {
-            'Content-type': 'application/x-www-form-urlencoded'
+            'Content-type': 'application/x-www-form-urlencoded',
           },
-          body: `client_id=${clientID}&scope=${scope}&code=${code}&redirect_uri=${redirect_uri}&grant_type=authorization_code&client_secret=${clientSecret}&code_verifier=${state}`
+          credentials: 'omit',
+          body: `client_id=${clientID}&scope=${scope}&code=${code}&redirect_uri=${redirect_uri}&grant_type=authorization_code&client_secret=${clientSecret}&code_verifier=${state}`,
         })
           .then(safeJson)
-          .then(data => {
+          .then((data) => {
             storage.set({
               access_token: data.access_token,
               refresh_token: data.refresh_token,
-              expired_at: timestamp() + data.expires_in
+              expired_at: timestamp() + data.expires_in,
             });
 
             resolve(data.access_token);
           })
-          .catch(err => reject(err.message));
+          .catch((err) => reject(err.message));
       }
     );
-  }).catch(message => {
+  }).catch((message) => {
     authClear();
     notification(message);
   });
@@ -188,19 +190,20 @@ export function bgMe(token) {
     fetch('https://outlook.office.com/api/v2.0/me', {
       method: 'GET',
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
+      credentials: 'omit',
     })
       .then(safeJson)
-      .then(data => {
+      .then((data) => {
         const me = { name: data.DisplayName, email: data.EmailAddress };
         storage.set(me);
         resolve(me);
       })
-      .catch(err => {
+      .catch((err) => {
         reject(err.message);
       });
-  }).catch(message => notification(message));
+  }).catch((message) => notification(message));
 }
 
 export function me() {
@@ -211,7 +214,7 @@ export function logout() {
   chrome.identity.launchWebAuthFlow(
     {
       url: `https://login.windows.net/common/oauth2/logout?postlogoutredirect_uri=${redirect_uri}`,
-      interactive: true
+      interactive: true,
     },
     () => chrome.runtime.lastError
   );
@@ -224,6 +227,6 @@ function authClear() {
     'refresh_token',
     'expired_at',
     'name',
-    'email'
+    'email',
   ]);
 }
