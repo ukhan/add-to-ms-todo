@@ -6,6 +6,12 @@ import { preDelete } from './helpers/presave';
 import config from './helpers/config';
 import pages from './helpers/pages';
 import log from './helpers/log';
+import {
+  createQuickAddMenu,
+  removeQuickAddMenu,
+  createDebugMenu,
+  removeDebugMenu,
+} from './helpers/context-menu';
 
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
@@ -35,40 +41,20 @@ chrome.runtime.onInstalled.addListener(() => {
   });
 });
 
-config.onChanged((cfg) => {
-  if (cfg.quickAddTaskInContextMenu) {
+config.onChanged((newConfig) => {
+  if (newConfig.quickAddTaskInContextMenu) {
     createQuickAddMenu();
   } else {
-    chrome.contextMenus.remove('QUICK_ADD_TASK', () => {
-      chrome.runtime.lastError;
-    });
+    removeQuickAddMenu();
   }
 
-  if (cfg.saveDebugInfo) {
+  if (newConfig.saveDebugInfo) {
     createDebugMenu();
   } else {
     log.clear();
-    chrome.contextMenus.remove('VIEW_DEBUG_INFO', () => {
-      chrome.runtime.lastError;
-    });
+    removeDebugMenu();
   }
 });
-
-function createQuickAddMenu() {
-  chrome.contextMenus.create({
-    id: 'QUICK_ADD_TASK',
-    title: t('QuickAddCommandDescription'),
-    contexts: ['page', 'selection', 'link', 'image'],
-  });
-}
-
-function createDebugMenu() {
-  chrome.contextMenus.create({
-    id: 'VIEW_DEBUG_INFO',
-    title: t('ViewDebugInfo'),
-    contexts: ['browser_action'],
-  });
-}
 
 chrome.contextMenus.onClicked.addListener((info) => {
   switch (info.menuItemId) {
@@ -91,7 +77,6 @@ chrome.contextMenus.onClicked.addListener((info) => {
 });
 
 chrome.commands.onCommand.addListener((command) => {
-  console.log('Command:', command);
   if (command === 'QUICK_ADD') {
     quickAddTask();
   }

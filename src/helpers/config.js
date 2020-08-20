@@ -60,7 +60,7 @@ export function reset() {
 export function onChanged(cb) {
   chrome.storage.onChanged.addListener((changes, areaName) => {
     if (areaName === 'sync' && CONFIG_KEY in changes) {
-      cb(changes[CONFIG_KEY].newValue);
+      cb(changes[CONFIG_KEY].newValue, changes[CONFIG_KEY].oldValue);
     }
   });
 }

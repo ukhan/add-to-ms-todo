@@ -4,6 +4,7 @@ const urlParse = require('url-parse');
 import notification from './notification';
 import storage from './encrypted-storage';
 import { safeJson } from './fetch';
+import { createQuickAddMenu, removeQuickAddMenu } from './context-menu';
 
 const oauthURL = 'https://login.microsoftonline.com/common/oauth2/v2.0';
 const clientID = process.env.CLIENT_ID;
@@ -171,7 +172,7 @@ export function bgAuth() {
               refresh_token: data.refresh_token,
               expired_at: timestamp() + data.expires_in,
             });
-
+            createQuickAddMenu();
             resolve(data.access_token);
           })
           .catch((err) => reject(err.message));
@@ -211,6 +212,7 @@ export function me() {
 }
 
 export function logout() {
+  removeQuickAddMenu();
   chrome.identity.launchWebAuthFlow(
     {
       url: `https://login.windows.net/common/oauth2/logout?postlogoutredirect_uri=${redirect_uri}`,
