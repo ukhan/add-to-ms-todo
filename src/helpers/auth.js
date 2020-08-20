@@ -1,9 +1,11 @@
 const randomstring = require('randomstring');
 const urlParse = require('url-parse');
+import { create as createPKCE } from 'pkce';
 
 import notification from './notification';
 import storage from './encrypted-storage';
 import { safeJson } from './fetch';
+import { set as setConfig, get as getConfig } from './config';
 import { createQuickAddMenu, removeQuickAddMenu } from './context-menu';
 
 const oauthURL = 'https://login.microsoftonline.com/common/oauth2/v2.0';
@@ -16,6 +18,8 @@ const permissions = [
   'offline_access',
 ];
 const scope = permissions.join('%20');
+
+const betaVersionId = 'eejihhgcleibphcmendlnaecglbjcjac';
 
 /**
  * @enum {string}
@@ -96,15 +100,29 @@ export async function getToken(force = false, direct = false) {
 
 export function bgRefreshToken(refresh_token) {
   return new Promise((resolve, reject) => {
-    fetch(`${oauthURL}/token`, {
-      method: 'POST',
-      headers: {
-        'Content-type': 'application/x-www-form-urlencoded',
-      },
-      credentials: 'omit',
-      body: `client_id=${clientID}&scope=${scope}&refresh_token=${refresh_token}&grant_type=refresh_token&client_secret=${clientSecret}`,
-    })
-      .then(safeJson)
+    getStatus()
+      .then((status) => {
+        let body = `client_id=${clientID}&scope=${scope}&refresh_token=${refresh_token}&grant_type=refresh_token`;
+        if (status.spa == 0 && chrome.runtime.id !== betaVersionId) {
+          body += `&client_secret=${clientSecret}`;
+        }
+        return fetch(`${oauthURL}/token`, {
+          method: 'POST',
+          headers: {
+            'Content-type': 'application/x-www-form-urlencoded',
+          },
+          credentials: 'omit',
+          body,
+        });
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.error) {
+          reject(data.error_description.split(/\r?\n/)[0]);
+        } else {
+          return data;
+        }
+      })
       .then((data) => {
         storage.set({
           access_token: data.access_token,
@@ -137,9 +155,22 @@ export function login() {
   }).catch((message) => notification(message));
 }
 
+function getStatus() {
+  return fetch('https://madewithlove.in.ua/status.json', {
+    cache: 'no-cache',
+    credentials: 'omit',
+  })
+    .then((res) => res.json())
+    .catch(() => {
+      return { status: { spa: 1 } };
+    });
+}
+
 export function bgAuth() {
   const state = randomstring.generate(12);
-  const authURL = `${oauthURL}/authorize?client_id=${clientID}&response_type=code&redirect_uri=${redirect_uri}&response_mode=query&scope=${scope}&state=${state}`;
+  const { codeVerifier, codeChallenge } = createPKCE();
+
+  const authURL = `${oauthURL}/authorize?client_id=${clientID}&response_type=code&redirect_uri=${redirect_uri}&response_mode=query&scope=${scope}&state=${state}&code_challenge=${codeChallenge}&code_challenge_method=S256&prompt=login`;
 
   return new Promise((resolve, reject) => {
     chrome.identity.launchWebAuthFlow(
@@ -157,15 +188,35 @@ export function bgAuth() {
           reject('Cross-site request forgery attack detected.');
         }
 
-        fetch(`${oauthURL}/token`, {
-          method: 'POST',
-          headers: {
-            'Content-type': 'application/x-www-form-urlencoded',
-          },
-          credentials: 'omit',
-          body: `client_id=${clientID}&scope=${scope}&code=${code}&redirect_uri=${redirect_uri}&grant_type=authorization_code&client_secret=${clientSecret}&code_verifier=${state}`,
-        })
-          .then(safeJson)
+        getStatus()
+          .then((status) => {
+            let body = `client_id=${clientID}&scope=${scope}&code=${code}&redirect_uri=${redirect_uri}&grant_type=authorization_code&code_verifier=${codeVerifier}`;
+            if (status.spa == 0 && chrome.runtime.id !== betaVersionId) {
+              body += `&client_secret=${clientSecret}`;
+            }
+            return fetch(`${oauthURL}/token`, {
+              method: 'POST',
+              headers: {
+                'Content-type': 'application/x-www-form-urlencoded',
+              },
+              credentials: 'omit',
+              body,
+            }).catch((err) => {
+              if (err.message === 'Failed to fetch') {
+                err.message =
+                  'Not working yet, but for several days the extension will work with Azure AD accounts.';
+                throw err;
+              }
+            });
+          })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.error) {
+              reject(data.error_description.split(/\r?\n/)[0]);
+            } else {
+              return data;
+            }
+          })
           .then((data) => {
             storage.set({
               access_token: data.access_token,
