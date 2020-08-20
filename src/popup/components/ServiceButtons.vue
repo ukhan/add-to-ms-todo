@@ -10,24 +10,6 @@
       plain
     ></el-button>
     <el-button
-      v-if="isReviewButtonVisible"
-      icon="el-icon-medal-1"
-      size="medium"
-      :title="t('RateExtension')"
-      @click="goReviews"
-      type="info"
-      plain
-    ></el-button>
-    <el-button
-      v-if="isIssueButtonVisible"
-      icon="el-icon-warning-outline"
-      size="medium"
-      :title="t('ReportBug')"
-      @click="goSupport"
-      type="info"
-      plain
-    ></el-button>
-    <el-button
       v-if="isSettingsButtonVisible"
       icon="el-icon-setting"
       size="medium"
