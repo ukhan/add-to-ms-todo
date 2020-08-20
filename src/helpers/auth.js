@@ -212,7 +212,11 @@ export function me() {
 }
 
 export function logout() {
+  chrome.storage.local.clear();
   removeQuickAddMenu();
+  resetDefaultList();
+  authClear();
+
   chrome.identity.launchWebAuthFlow(
     {
       url: `https://login.windows.net/common/oauth2/logout?postlogoutredirect_uri=${redirect_uri}`,
@@ -220,7 +224,13 @@ export function logout() {
     },
     () => chrome.runtime.lastError
   );
-  authClear();
+}
+
+function resetDefaultList() {
+  getConfig().then((cfg) => {
+    cfg.listDefault = '';
+    setConfig(cfg);
+  });
 }
 
 function authClear() {
