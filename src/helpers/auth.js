@@ -10,7 +10,6 @@ import { createQuickAddMenu, removeQuickAddMenu } from './context-menu';
 
 const oauthURL = 'https://login.microsoftonline.com/common/oauth2/v2.0';
 const clientID = process.env.CLIENT_ID;
-const clientSecret = process.env.CLIENT_SECRET;
 const redirect_uri = chrome.identity.getRedirectURL();
 const permissions = [
   'https://outlook.office.com/user.read',
@@ -18,8 +17,6 @@ const permissions = [
   'offline_access',
 ];
 const scope = permissions.join('%20');
-
-const betaVersionId = 'eejihhgcleibphcmendlnaecglbjcjac';
 
 /**
  * @enum {string}
@@ -100,21 +97,14 @@ export async function getToken(force = false, direct = false) {
 
 export function bgRefreshToken(refresh_token) {
   return new Promise((resolve, reject) => {
-    getStatus()
-      .then((status) => {
-        let body = `client_id=${clientID}&scope=${scope}&refresh_token=${refresh_token}&grant_type=refresh_token`;
-        if (status.spa == 0 && chrome.runtime.id !== betaVersionId) {
-          body += `&client_secret=${clientSecret}`;
-        }
-        return fetch(`${oauthURL}/token`, {
-          method: 'POST',
-          headers: {
-            'Content-type': 'application/x-www-form-urlencoded',
-          },
-          credentials: 'omit',
-          body,
-        });
-      })
+    fetch(`${oauthURL}/token`, {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/x-www-form-urlencoded',
+      },
+      credentials: 'omit',
+      body: `client_id=${clientID}&scope=${scope}&refresh_token=${refresh_token}&grant_type=refresh_token`,
+    })
       .then((response) => response.json())
       .then((data) => {
         if (data.error) {
@@ -155,17 +145,6 @@ export function login() {
   }).catch((message) => notification(message));
 }
 
-function getStatus() {
-  return fetch('https://madewithlove.in.ua/status.json', {
-    cache: 'no-cache',
-    credentials: 'omit',
-  })
-    .then((res) => res.json())
-    .catch(() => {
-      return { status: { spa: 1 } };
-    });
-}
-
 export function bgAuth() {
   const state = randomstring.generate(12);
   const { codeVerifier, codeChallenge } = createPKCE();
@@ -188,27 +167,14 @@ export function bgAuth() {
           reject('Cross-site request forgery attack detected.');
         }
 
-        getStatus()
-          .then((status) => {
-            let body = `client_id=${clientID}&scope=${scope}&code=${code}&redirect_uri=${redirect_uri}&grant_type=authorization_code&code_verifier=${codeVerifier}`;
-            if (status.spa == 0 && chrome.runtime.id !== betaVersionId) {
-              body += `&client_secret=${clientSecret}`;
-            }
-            return fetch(`${oauthURL}/token`, {
-              method: 'POST',
-              headers: {
-                'Content-type': 'application/x-www-form-urlencoded',
-              },
-              credentials: 'omit',
-              body,
-            }).catch((err) => {
-              if (err.message === 'Failed to fetch') {
-                err.message =
-                  'Not working yet, but for several days the extension will work with Azure AD accounts.';
-                throw err;
-              }
-            });
-          })
+        fetch(`${oauthURL}/token`, {
+          method: 'POST',
+          headers: {
+            'Content-type': 'application/x-www-form-urlencoded',
+          },
+          credentials: 'omit',
+          body: `client_id=${clientID}&scope=${scope}&code=${code}&redirect_uri=${redirect_uri}&grant_type=authorization_code&code_verifier=${codeVerifier}`,
+        })
           .then((response) => response.json())
           .then((data) => {
             if (data.error) {
@@ -267,14 +233,6 @@ export function logout() {
   removeQuickAddMenu();
   resetDefaultList();
   authClear();
-
-  chrome.identity.launchWebAuthFlow(
-    {
-      url: `https://login.windows.net/common/oauth2/logout?postlogoutredirect_uri=${redirect_uri}`,
-      interactive: true,
-    },
-    () => chrome.runtime.lastError
-  );
 }
 
 function resetDefaultList() {

@@ -1,5 +1,9 @@
 # Release Notes
 
+## v0.17.0 (2020-08-25)
+
+- Support for Azure AD accounts.
+
 ## v0.16.1 (2020-08-13)
 
 - Fixed an error that didn't save the last used list.
