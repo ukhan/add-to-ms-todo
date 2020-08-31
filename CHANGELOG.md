@@ -1,5 +1,9 @@
 # Release Notes
 
+## v0.17.1 (2020-08-31)
+
+- Re-authentication using cookies when the 24-hour refresh_token lifetime ends.
+
 ## v0.17.0 (2020-08-25)
 
 - Support for Azure AD accounts.

@@ -18,6 +18,10 @@ const permissions = [
 ];
 const scope = permissions.join('%20');
 
+// Single page apps, however, get a token with a 24 hour lifetime, requiring a new authentication every day.
+// https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-auth-code-flow#refresh-the-access-token
+const refreshTokenLifetime = 24 * 60 * 60;
+
 /**
  * @enum {string}
  */
@@ -48,10 +52,10 @@ export async function isAuthenticated(authMethod = CheckAuthMethod.FAST) {
   return (access_token || '').length > 0;
 }
 
-export function refreshToken(refresh_token) {
+export function refreshToken(refresh_token, expired_at) {
   return new Promise((resolve, reject) => {
     chrome.runtime.sendMessage(
-      { action: 'REFRESH_TOKEN', refresh_token },
+      { action: 'REFRESH_TOKEN', refresh_token, expired_at },
       (response) => {
         if (chrome.runtime.lastError) {
           reject(chrome.runtime.lastError.message);
@@ -78,24 +82,34 @@ function timestamp() {
  * @param {Boolean} direct Direct refresh without sendMessage to background
  */
 export async function getToken(force = false, direct = false) {
-  const { access_token, expired_at, refresh_token } = await storage.get([
+  const {
+    access_token,
+    expired_at,
+    refresh_token,
+    refresh_token_expired_at,
+  } = await storage.get([
     'access_token',
     'expired_at',
     'refresh_token',
+    'refresh_token_expired_at',
   ]);
 
   if ((isExpired(expired_at) || force) && refresh_token) {
     if (direct) {
-      return await bgRefreshToken(refresh_token);
+      return await bgRefreshToken(refresh_token, refresh_token_expired_at);
     } else {
-      return await refreshToken(refresh_token);
+      return await refreshToken(refresh_token, refresh_token_expired_at);
     }
   } else {
     return access_token || '';
   }
 }
 
-export function bgRefreshToken(refresh_token) {
+export function bgRefreshToken(refresh_token, expired_at) {
+  if (isExpired(expired_at)) {
+    return bgAuth(true);
+  }
+
   return new Promise((resolve, reject) => {
     fetch(`${oauthURL}/token`, {
       method: 'POST',
@@ -118,6 +132,7 @@ export function bgRefreshToken(refresh_token) {
           access_token: data.access_token,
           refresh_token: data.refresh_token,
           expired_at: timestamp() + data.expires_in,
+          refresh_token_expired_at: timestamp() + refreshTokenLifetime,
         });
         resolve(data.access_token);
       })
@@ -127,8 +142,7 @@ export function bgRefreshToken(refresh_token) {
       'access_token',
       'refresh_token',
       'expired_at',
-      'name',
-      'email',
+      'refresh_token_expired_at',
     ]);
     notification(err.message);
   });
@@ -145,11 +159,15 @@ export function login() {
   }).catch((message) => notification(message));
 }
 
-export function bgAuth() {
+export function bgAuth(tryUseCookie = false) {
   const state = randomstring.generate(12);
   const { codeVerifier, codeChallenge } = createPKCE();
 
-  const authURL = `${oauthURL}/authorize?client_id=${clientID}&response_type=code&redirect_uri=${redirect_uri}&response_mode=query&scope=${scope}&state=${state}&code_challenge=${codeChallenge}&code_challenge_method=S256&prompt=login`;
+  let authURL = `${oauthURL}/authorize?client_id=${clientID}&response_type=code&redirect_uri=${redirect_uri}&response_mode=query&scope=${scope}&state=${state}&code_challenge=${codeChallenge}&code_challenge_method=S256`;
+
+  if (!tryUseCookie) {
+    authURL += '&prompt=login';
+  }
 
   return new Promise((resolve, reject) => {
     chrome.identity.launchWebAuthFlow(
@@ -188,6 +206,7 @@ export function bgAuth() {
               access_token: data.access_token,
               refresh_token: data.refresh_token,
               expired_at: timestamp() + data.expires_in,
+              refresh_token_expired_at: timestamp() + refreshTokenLifetime,
             });
             createQuickAddMenu();
             resolve(data.access_token);
@@ -247,6 +266,7 @@ function authClear() {
     'access_token',
     'refresh_token',
     'expired_at',
+    'refresh_token_expired_at',
     'name',
     'email',
   ]);

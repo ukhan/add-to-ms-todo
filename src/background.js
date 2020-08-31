@@ -89,7 +89,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       .then((profile) => sendResponse(profile));
     return true;
   } else if (request.action === 'REFRESH_TOKEN') {
-    bgRefreshToken(request.refresh_token).then((token) =>
+    bgRefreshToken(request.refresh_token, request.expired_at).then((token) =>
       sendResponse({ token })
     );
     return true;
