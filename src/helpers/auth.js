@@ -122,7 +122,7 @@ export function bgRefreshToken(refresh_token, expired_at) {
       .then((response) => response.json())
       .then((data) => {
         if (data.error) {
-          reject(data.error_description.split(/\r?\n/)[0]);
+          return bgAuth(true).then((access_token) => resolve(access_token));
         } else {
           return data;
         }

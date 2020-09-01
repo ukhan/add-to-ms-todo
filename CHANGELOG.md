@@ -1,5 +1,9 @@
 # Release Notes
 
+## v0.17.2 (2020-09-01)
+
+- It looks like refresh_token lives less than 24 hours ...
+
 ## v0.17.1 (2020-08-31)
 
 - Re-authentication using cookies when the 24-hour refresh_token lifetime ends.
