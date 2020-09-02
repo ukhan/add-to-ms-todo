@@ -31,7 +31,7 @@
     "autoprefixer": "^9.8.6",
     "babel-jest": "^26.3.0",
     "babel-loader": "^8.1.0",
-    "bestzip": "^2.1.6",
+    "bestzip": "^2.1.7",
     "copy-webpack-plugin": "^6.0.3",
     "cross-env": "^7.0.2",
     "css-loader": "^4.2.1",
