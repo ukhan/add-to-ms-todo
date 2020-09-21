@@ -84,6 +84,21 @@ Settings:
   uk: Налаштування
   ru: Настройки
 
+ClearOrFill:
+  en: Clear or fill out the form
+  uk: Очистити або заповнити форму
+  ru: Очистить или заполнить форму
+
+ClearForm:
+  en: Clear the form
+  uk: Очистити форму
+  ru: Очистить форму
+
+FillForm:
+  en: Fill out the form
+  uk: Заповнити форму
+  ru: Заполнить форму
+
 Account:
   en: Account
   uk: Обліковий запис
@@ -173,6 +188,11 @@ RememberLastUsedList:
   en: Remember last used list
   uk: Запам'ятовувати останній використаний список
   ru: Запоминать последний использованный список
+
+PreFill:
+  en: Pre-fill the form
+  uk: Попередньо заповнити форму
+  ru: Предварительно заполнить форму
 
 NotifyOnSuccess:
   en: Report successfully save the task

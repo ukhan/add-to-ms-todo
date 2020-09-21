@@ -16,8 +16,9 @@ const defaultConfig = {
   useLastUsedList: false,
   showReminderDate: true,
   showDueDate: false,
+  preFill: true,
   notifyOnSuccess: true,
-  showButtons: ['settings'], // 'settings', 'logout'
+  showButtons: ['settings', 'toggle'], // 'settings', 'toggle', 'logout'
   quickAddTaskInContextMenu: true,
   saveDebugInfo: false,
 };

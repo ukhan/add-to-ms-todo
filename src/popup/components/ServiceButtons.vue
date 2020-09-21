@@ -18,6 +18,15 @@
       type="primary"
       plain
     ></el-button>
+    <el-button
+      v-if="isToggleButtonVisible"
+      :icon="toggleButtonIcon"
+      :title="toggleButtonTitle"
+      size="medium"
+      @click="toggleForm"
+      type="primary"
+      plain
+    ></el-button>
   </el-button-group>
 
   <div v-else>
@@ -36,6 +45,15 @@
       size="medium"
       :title="t('Settings')"
       @click="goSettings"
+      type="primary"
+      plain
+    ></el-button>
+    <el-button
+      v-if="isToggleButtonVisible"
+      :icon="toggleButtonIcon"
+      :title="toggleButtonTitle"
+      size="medium"
+      @click="toggleForm"
       type="primary"
       plain
     ></el-button>
@@ -108,10 +126,14 @@ export default {
   data() {
     return {
       version: p.version,
+      formFilled: this.config.preFill,
     };
   },
 
   computed: {
+    isToggleButtonVisible() {
+      return this.isButtonVisible('toggle', this.config);
+    },
     isSettingsButtonVisible() {
       return this.isButtonVisible('settings', this.config);
     },
@@ -123,6 +145,12 @@ export default {
     },
     noButtonsVisible() {
       return !this.config.showButtons.length;
+    },
+    toggleButtonTitle() {
+      return this.formFilled ? this.t('ClearForm') : this.t('FillForm');
+    },
+    toggleButtonIcon() {
+      return this.formFilled ? 'el-icon-delete' : 'el-icon-link';
     },
   },
 
@@ -139,17 +167,14 @@ export default {
       }
     },
 
-    goReviews() {
-      pages.reviews();
-    },
-
-    goSupport() {
-      pages.support();
-    },
-
     async logout() {
       await logout();
       this.$emit('logout');
+    },
+
+    toggleForm() {
+      this.formFilled = !this.formFilled;
+      this.$emit('toggle', this.formFilled ? 'fill' : 'clear');
     },
 
     t,

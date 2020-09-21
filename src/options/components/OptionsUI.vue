@@ -120,6 +120,9 @@
     <el-form-item :label="t('ShowDueDate')" label-width="350px">
       <el-switch v-model="config.showDueDate"></el-switch>
     </el-form-item>
+    <el-form-item :label="t('PreFill')" label-width="350px">
+      <el-switch v-model="config.preFill"></el-switch>
+    </el-form-item>
     <el-form-item :label="t('NotifyOnSuccess')" label-width="350px">
       <el-switch v-model="config.notifyOnSuccess"></el-switch>
     </el-form-item>
@@ -132,11 +135,15 @@
 
     <el-form-item class="buttons" :label="t('ShowButtons')">
       <el-checkbox-group size="small" v-model="config.showButtons">
+        <el-checkbox-button label="logout" :title="t('Logout')">
+          <i class="el-icon-switch-button"></i>
+        </el-checkbox-button>
         <el-checkbox-button label="settings" :title="t('Settings')">
           <i class="el-icon-setting"></i>
         </el-checkbox-button>
-        <el-checkbox-button label="logout" :title="t('Logout')">
-          <i class="el-icon-switch-button"></i>
+        <el-checkbox-button label="toggle" :title="t('ClearOrFill')">
+          <i class="el-icon-delete" v-if="config.preFill"></i>
+          <i class="el-icon-delete" v-else></i>
         </el-checkbox-button>
       </el-checkbox-group>
     </el-form-item>

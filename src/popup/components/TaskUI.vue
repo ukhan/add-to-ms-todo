@@ -62,6 +62,7 @@
           :config="config"
           :profile="profile"
           @logout="$emit('logout')"
+          @toggle="toggleForm($event)"
         />
       </el-col>
       <el-col :span="9">
@@ -258,10 +259,10 @@ export default {
         if (data.task) {
           this.task = data.task;
         } else {
-          this.task.title = this.tabInfo.title;
-          this.task.description = this.tabInfo.selected.trim().length
-            ? `${this.tabInfo.selected}\n\n ${this.tabInfo.url}`
-            : this.tabInfo.url;
+          if (this.config.preFill) {
+            this.task.title = this.tabInfo.title;
+            this.task.description = this.getTaskDescription();
+          }
         }
       });
   },
@@ -317,6 +318,30 @@ export default {
           this.inProcess = false;
           notification(err);
         });
+    },
+
+    getTaskDescription() {
+      return this.tabInfo.selected.trim().length
+        ? `${this.tabInfo.selected}\n\n ${this.tabInfo.url}`
+        : this.tabInfo.url;
+    },
+
+    toggleForm(whatToDo) {
+      if (whatToDo === 'clear') {
+        this.clearTaskInfo();
+      } else {
+        this.fillTaskInfo();
+      }
+    },
+
+    clearTaskInfo() {
+      this.task.title = '';
+      this.task.description = '';
+    },
+
+    fillTaskInfo() {
+      this.task.title = this.tabInfo.title;
+      this.task.description = this.getTaskDescription();
     },
 
     t,

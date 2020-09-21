@@ -1,5 +1,10 @@
 # Release Notes
 
+## v0.18.0 (2020-09-21)
+
+- Added the ability to toggle the state of the form (blank/filled).
+- Added a setting that allows setting the initial state of the form.
+
 ## v0.17.2 (2020-09-01)
 
 - It looks like refresh_token lives less than 24 hours ...
