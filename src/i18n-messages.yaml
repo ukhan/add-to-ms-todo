@@ -263,3 +263,13 @@ DueDate:
   en: Due date
   uk: Дата виконання
   ru: Дата выполнения
+
+UserCancelAuth:
+  en: The user canceled the authentication.
+  uk: Користувач скасував автентифікацію.
+  ru: Пользователь отменил аутентификацию.
+
+extIsUpdated:
+  en: The extension is updated. Click here to learn about the changes.
+  uk: Розширення було оновлено. Натисніть тут щоб дізнатися про зміни.
+  ru: Расширение было обновлено. Нажмите здесь чтобы узнать об изменениях.

@@ -12,8 +12,45 @@ import {
   createDebugMenu,
   removeDebugMenu,
 } from './helpers/context-menu';
+import semver from './helpers/semver';
 
-chrome.runtime.onInstalled.addListener(() => {
+chrome.runtime.onInstalled.addListener((details) => {
+  let currentVersion = semver(chrome.runtime.getManifest().version);
+
+  if (details.reason === 'update') {
+    let previousVersion = semver(details.previousVersion);
+
+    if (
+      parseInt(previousVersion.minor) < 19 &&
+      currentVersion.minor === '19' &&
+      currentVersion.major === '0'
+    ) {
+      chrome.notifications.create(
+        {
+          type: 'basic',
+          iconUrl: 'icons/todo-128.png',
+          title: t('extName'),
+          message: t('extIsUpdated'),
+          requireInteraction: true,
+          silent: true,
+        },
+        (notificationId) => {
+          chrome.notifications.onClicked.addListener(
+            (clickedNotificationId) => {
+              if (clickedNotificationId === notificationId) {
+                chrome.tabs.create({
+                  url:
+                    'https://github.com/ukhan/add-to-ms-todo/blob/master/CHANGELOG.md',
+                });
+                chrome.notifications.clear(notificationId);
+              }
+            }
+          );
+        }
+      );
+    }
+  }
+
   chrome.contextMenus.create({
     id: 'OPEN_TODO',
     title: t('OpenMicrosoftToDo'),

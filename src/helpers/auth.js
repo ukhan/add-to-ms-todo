@@ -7,6 +7,7 @@ import storage from './encrypted-storage';
 import { safeJson } from './fetch';
 import { set as setConfig, get as getConfig } from './config';
 import { createQuickAddMenu, removeQuickAddMenu } from './context-menu';
+import { t } from './i18n';
 
 const oauthURL = 'https://login.microsoftonline.com/common/oauth2/v2.0';
 const clientID = process.env.CLIENT_ID;
@@ -159,6 +160,79 @@ export function login() {
   }).catch((message) => notification(message));
 }
 
+function launchAltAuthFlow({ url, tryBg }, cb) {
+  const timeUntilAuthTabActivate = 2500;
+  let timerUntilAuthTabActivate;
+  let lastTabId, authTabId;
+
+  function authTabUpdatedHandle(tabId, changeInfo, tab) {
+    if (tabId === authTabId) {
+      if (changeInfo.status === 'complete') {
+        let q = urlParse(tab.url, true).query;
+
+        if ('code' in q) {
+          closeAuthTab();
+          cb(tab.url);
+        } else if ('error' in q) {
+          closeAuthTab();
+          notification(q.error_description);
+        }
+      }
+    }
+  }
+
+  function authTabClosedHandler(tabId) {
+    if (tabId === authTabId) {
+      removeTabListeners();
+      goLastTab();
+      notification(t('UserCancelAuth'));
+    }
+  }
+
+  function addTabListeners() {
+    chrome.tabs.onUpdated.addListener(authTabUpdatedHandle);
+    chrome.tabs.onRemoved.addListener(authTabClosedHandler);
+  }
+
+  function removeTabListeners() {
+    chrome.tabs.onUpdated.removeListener(authTabUpdatedHandle);
+    chrome.tabs.onRemoved.removeListener(authTabClosedHandler);
+  }
+
+  function closeAuthTab() {
+    removeTabListeners();
+    clearTimeout(timerUntilAuthTabActivate);
+    chrome.tabs.remove(authTabId);
+    goLastTab();
+  }
+
+  function moveAuthTabForeground() {
+    chrome.tabs.update(authTabId, { active: true });
+  }
+
+  function goLastTab() {
+    chrome.tabs.update(lastTabId, { active: true });
+  }
+
+  chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+    lastTabId = tabs[0].id;
+  });
+
+  chrome.tabs.create(
+    {
+      url,
+      active: !tryBg,
+    },
+    (tab) => {
+      authTabId = tab.id;
+      addTabListeners();
+      timerUntilAuthTabActivate = setTimeout(() => {
+        moveAuthTabForeground();
+      }, timeUntilAuthTabActivate);
+    }
+  );
+}
+
 export function bgAuth(tryUseCookie = false) {
   const state = randomstring.generate(12);
   const { codeVerifier, codeChallenge } = createPKCE();
@@ -170,10 +244,10 @@ export function bgAuth(tryUseCookie = false) {
   }
 
   return new Promise((resolve, reject) => {
-    chrome.identity.launchWebAuthFlow(
+    launchAltAuthFlow(
       {
         url: authURL,
-        interactive: true,
+        tryBg: tryUseCookie,
       },
       (responseUrl) => {
         if (chrome.runtime.lastError) {
