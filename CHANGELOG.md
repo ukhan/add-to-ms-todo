@@ -1,5 +1,9 @@
 # Release Notes
 
+## v0.19.1 (2020-09-28)
+
+- Increased time before auth tab activation.
+
 ## v0.19.0 (2020-09-27)
 
 - You will no longer have to enter your username and password if more than 24 hours have passed since the last use of the extension, and the browser has restarted. You can read in more detail why this was happening [here](http://bit.ly/24h-issue). Because it is impossible to use the standard browser functionality with the Microsoft API, the extension will need additional "Read your browsing history" permissions. It is necessary so that the extension can authenticate the user in a separate browser tab.

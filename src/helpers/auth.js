@@ -161,7 +161,7 @@ export function login() {
 }
 
 function launchAltAuthFlow({ url, tryBg }, cb) {
-  const timeUntilAuthTabActivate = 2500;
+  const timeUntilAuthTabActivate = 4000;
   let timerUntilAuthTabActivate;
   let lastTabId, authTabId;
 
