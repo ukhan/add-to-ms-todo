@@ -161,7 +161,7 @@ export function login() {
 }
 
 function launchAltAuthFlow({ url, tryBg }, cb) {
-  const timeUntilAuthTabActivate = 4000;
+  const TIME_UNTIL_AUTH_TAB_ACTIVATE = 5000;
   let timerUntilAuthTabActivate;
   let lastTabId, authTabId;
 
@@ -228,7 +228,7 @@ function launchAltAuthFlow({ url, tryBg }, cb) {
       addTabListeners();
       timerUntilAuthTabActivate = setTimeout(() => {
         moveAuthTabForeground();
-      }, timeUntilAuthTabActivate);
+      }, TIME_UNTIL_AUTH_TAB_ACTIVATE);
     }
   );
 }
