@@ -8,6 +8,8 @@ import { woodpeckerFetch } from './fetch';
 
 const baseUrl = 'https://outlook.office.com/api/v2.0/me';
 
+const FOLDERS_COUNT_CHUNK = 100;
+
 export async function getFolders() {
   let access_token = await getToken();
 
@@ -32,7 +34,7 @@ export async function getFolders() {
 export async function bgGetFolders(access_token) {
   let config = await getConfig();
   let debug = config.saveDebugInfo;
-  let url = `${baseUrl}/taskfolders?top=25`;
+  let url = `${baseUrl}/taskfolders?top=${FOLDERS_COUNT_CHUNK}`;
   let folders = [];
 
   try {
