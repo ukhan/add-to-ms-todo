@@ -5,6 +5,7 @@
       v-else-if="isAuthenticated"
       :profile="profile"
       :lists="lists"
+      :listsLoaded="listsLoaded"
       @logout="handleLogout"
     />
     <LoginUI v-else @login="handleLogin" />
@@ -17,7 +18,7 @@ import {
   isAuthenticated,
   login,
   me,
-  logout
+  logout,
 } from '@/helpers/auth';
 import { getFolders } from '@/helpers/task';
 import LoadingUI from './LoadingUI';
@@ -31,7 +32,8 @@ export default {
     return {
       isAuthenticated: undefined,
       profile: {},
-      lists: []
+      lists: [],
+      listsLoaded: false,
     };
   },
 
@@ -55,24 +57,25 @@ export default {
     },
 
     async loadFolders() {
-      chrome.storage.local.get(['folders'], async res => {
+      chrome.storage.local.get(['folders'], async (res) => {
         this.lists = res.folders || [];
         let folders = await getFolders();
         if (folders.length) {
           this.lists = folders;
         }
+        this.listsLoaded = true;
       });
     },
 
     handleLogout() {
       this.isAuthenticated = '';
-    }
+    },
   },
 
   components: {
     LoadingUI,
     LoginUI,
-    TaskUI
-  }
+    TaskUI,
+  },
 };
 </script>

@@ -70,11 +70,11 @@
           class="submit-button"
           type="primary"
           size="medium"
-          :disabled="titleEmpty"
+          :disabled="submitDisabled"
           :loading="inProcess"
           @click="save"
         >
-          {{ t('SaveTask') }}
+          {{ submitTitle }}
         </el-button>
       </el-col>
     </el-row>
@@ -179,6 +179,10 @@ export default {
       type: Array,
       required: true,
     },
+    listsLoaded: {
+      type: Boolean,
+      required: true,
+    },
   },
 
   data() {
@@ -198,8 +202,12 @@ export default {
   },
 
   computed: {
-    titleEmpty() {
-      return !this.task.title.trim().length;
+    submitDisabled() {
+      return !this.task.title.trim().length || !this.listsLoaded;
+    },
+
+    submitTitle() {
+      return this.listsLoaded ? this.t('SaveTask') : this.t('Wait');
     },
 
     lst: {
