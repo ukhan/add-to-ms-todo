@@ -9,19 +9,19 @@ import { set as setConfig, get as getConfig } from './config';
 import { createQuickAddMenu, removeQuickAddMenu } from './context-menu';
 import { t } from './i18n';
 
-const oauthURL = 'https://login.microsoftonline.com/common/oauth2/v2.0';
-const clientID = process.env.CLIENT_ID;
-const redirect_uri = chrome.identity.getRedirectURL();
+export const oauthURL = 'https://login.microsoftonline.com/common/oauth2/v2.0';
+export const clientID = process.env.CLIENT_ID;
+export const redirect_uri = chrome.identity.getRedirectURL();
 const permissions = [
   'https://outlook.office.com/user.read',
   'https://outlook.office.com/tasks.readwrite',
   'offline_access',
 ];
-const scope = permissions.join('%20');
+export const scope = permissions.join('%20');
 
 // Single page apps, however, get a token with a 24 hour lifetime, requiring a new authentication every day.
 // https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-auth-code-flow#refresh-the-access-token
-const refreshTokenLifetime = 24 * 60 * 60;
+export const refreshTokenLifetime = 24 * 60 * 60;
 
 /**
  * @enum {string}
@@ -31,6 +31,10 @@ export const CheckAuthMethod = {
   NORMAL: 'normal',
   FORCE: 'force',
 };
+
+export const BEFORE_AUTH_TAB_ID_KEY = 'beforeAuthTabId';
+export const AUTH_TAB_ID_KEY = 'authTabId';
+export const CODE_VERIFIER_KEY = 'codeVerifier';
 
 /**
  * @param {CheckAuthMethod} method
@@ -72,7 +76,7 @@ function isExpired(expiredAt) {
   return expiredAt < timestamp() + TOKEN_EXPIRATION_DELTA;
 }
 
-function timestamp() {
+export function timestamp() {
   return Math.round(Date.now() / 1000);
 }
 
@@ -164,6 +168,14 @@ function launchAltAuthFlow({ url, tryBg }, cb) {
   const TIME_UNTIL_AUTH_TAB_ACTIVATE = 5000;
   let timerUntilAuthTabActivate;
   let lastTabId, authTabId;
+  let itRefresh = false;
+
+  setAuthInProgressStatus(true);
+  isAuthenticated().then((res) => (itRefresh = res));
+
+  function setAuthInProgressStatus(status) {
+    chrome.extension.getBackgroundPage().authInProcess = status;
+  }
 
   function authTabUpdatedHandle(tabId, changeInfo, tab) {
     if (tabId === authTabId) {
@@ -185,6 +197,7 @@ function launchAltAuthFlow({ url, tryBg }, cb) {
     if (tabId === authTabId) {
       removeTabListeners();
       goLastTab();
+      setAuthInProgressStatus(false);
       notification(t('UserCancelAuth'));
     }
   }
@@ -204,10 +217,13 @@ function launchAltAuthFlow({ url, tryBg }, cb) {
     clearTimeout(timerUntilAuthTabActivate);
     chrome.tabs.remove(authTabId);
     goLastTab();
+    if (!itRefresh) {
+      notification(t('authSuccess'));
+    }
   }
 
   function moveAuthTabForeground() {
-    chrome.tabs.update(authTabId, { active: true });
+    if (tryBg) chrome.tabs.update(authTabId, { active: true });
   }
 
   function goLastTab() {
@@ -216,6 +232,7 @@ function launchAltAuthFlow({ url, tryBg }, cb) {
 
   chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
     lastTabId = tabs[0].id;
+    chrome.storage.local.set({ [BEFORE_AUTH_TAB_ID_KEY]: tabs[0].id });
   });
 
   chrome.tabs.create(
@@ -225,6 +242,7 @@ function launchAltAuthFlow({ url, tryBg }, cb) {
     },
     (tab) => {
       authTabId = tab.id;
+      chrome.storage.local.set({ [AUTH_TAB_ID_KEY]: tab.id });
       addTabListeners();
       timerUntilAuthTabActivate = setTimeout(() => {
         moveAuthTabForeground();
@@ -242,6 +260,8 @@ export function bgAuth(tryUseCookie = false) {
   if (!tryUseCookie) {
     authURL += '&prompt=login';
   }
+
+  chrome.storage.local.set({ [CODE_VERIFIER_KEY]: codeVerifier });
 
   return new Promise((resolve, reject) => {
     launchAltAuthFlow(

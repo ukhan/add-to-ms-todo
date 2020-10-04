@@ -1,5 +1,9 @@
 # Release Notes
 
+## v0.19.2 (2020-10-04)
+
+- Fixed the error that occurs when a long enough time between the start of the authentication process and its completion.
+
 ## v0.19.1 (2020-09-28)
 
 - Increased time before auth tab activation.

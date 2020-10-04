@@ -169,3 +169,103 @@ function setSurvey(locale) {
 
   chrome.runtime.setUninstallURL(url);
 }
+
+// In case if Background script gone to inactive state when auth was in process
+
+const urlParse = require('url-parse');
+import notification from './helpers/notification';
+import storage from './helpers/encrypted-storage';
+import {
+  BEFORE_AUTH_TAB_ID_KEY,
+  AUTH_TAB_ID_KEY,
+  CODE_VERIFIER_KEY,
+  refreshTokenLifetime,
+  oauthURL,
+  clientID,
+  timestamp,
+  scope,
+  redirect_uri,
+} from './helpers/auth';
+
+window.authInProcess = false;
+
+function gotoBeforeAuthTab() {
+  chrome.storage.local.get([BEFORE_AUTH_TAB_ID_KEY], function (result) {
+    chrome.tabs.update(result[BEFORE_AUTH_TAB_ID_KEY], {
+      active: true,
+    });
+  });
+}
+
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (!window.authInProcess) {
+    chrome.storage.local.get([AUTH_TAB_ID_KEY, CODE_VERIFIER_KEY], function (
+      result
+    ) {
+      let authTabId = result[AUTH_TAB_ID_KEY];
+      let codeVerifier = result[CODE_VERIFIER_KEY];
+
+      function closeAuthTab() {
+        window.authInProcess = true;
+        chrome.tabs.remove(authTabId);
+        gotoBeforeAuthTab();
+      }
+
+      if (tabId === authTabId) {
+        if (changeInfo.status === 'complete') {
+          let q = urlParse(tab.url, true).query;
+
+          if ('code' in q) {
+            closeAuthTab();
+            let { code } = urlParse(tab.url, true).query;
+
+            fetch(`${oauthURL}/token`, {
+              method: 'POST',
+              headers: {
+                'Content-type': 'application/x-www-form-urlencoded',
+              },
+              credentials: 'omit',
+              body: `client_id=${clientID}&scope=${scope}&code=${code}&redirect_uri=${redirect_uri}&grant_type=authorization_code&code_verifier=${codeVerifier}`,
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                if (data.error) {
+                  throw new Error(data.error_description.split(/\r?\n/)[0]);
+                } else {
+                  return data;
+                }
+              })
+              .then((data) => {
+                storage.set({
+                  access_token: data.access_token,
+                  refresh_token: data.refresh_token,
+                  expired_at: timestamp() + data.expires_in,
+                  refresh_token_expired_at: timestamp() + refreshTokenLifetime,
+                });
+                createQuickAddMenu();
+                bgMe(data.access_token);
+                notification(t('authSuccess'));
+              })
+              .catch((err) => notification(err.message));
+          } else if ('error' in q) {
+            closeAuthTab();
+            notification(q.error_description);
+          }
+        }
+      }
+    });
+  }
+});
+
+chrome.tabs.onRemoved.addListener((tabId) => {
+  if (!window.authInProcess) {
+    chrome.storage.local.get([AUTH_TAB_ID_KEY], function (result) {
+      if (tabId === result[AUTH_TAB_ID_KEY]) {
+        window.authInProcess = false;
+        gotoBeforeAuthTab();
+        notification(t('UserCancelAuth'));
+      }
+    });
+  }
+  window.authInProcess = false;
+});

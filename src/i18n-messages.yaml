@@ -273,3 +273,8 @@ extIsUpdated:
   en: The extension is updated. Click here to learn about the changes.
   uk: Розширення було оновлено. Натисніть тут щоб дізнатися про зміни.
   ru: Расширение было обновлено. Нажмите здесь чтобы узнать об изменениях.
+
+authSuccess:
+  en: The account connected successfully.
+  uk: Обліковий запис успішно підключено.
+  ru: Учетная запись успешно подключена.
