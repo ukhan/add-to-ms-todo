@@ -170,11 +170,14 @@ function launchAltAuthFlow({ url, tryBg }, cb) {
   let lastTabId, authTabId;
   let itRefresh = false;
 
-  setAuthInProgressStatus(true);
   isAuthenticated().then((res) => (itRefresh = res));
 
   function setAuthInProgressStatus(status) {
     chrome.extension.getBackgroundPage().authInProcess = status;
+  }
+
+  function getAuthInProgressStatus() {
+    return chrome.extension.getBackgroundPage().authInProcess;
   }
 
   function authTabUpdatedHandle(tabId, changeInfo, tab) {
@@ -237,20 +240,59 @@ function launchAltAuthFlow({ url, tryBg }, cb) {
     chrome.storage.local.set({ [BEFORE_AUTH_TAB_ID_KEY]: tabs[0].id });
   });
 
-  chrome.tabs.create(
-    {
-      url,
-      active: !tryBg,
-    },
-    (tab) => {
-      authTabId = tab.id;
-      chrome.storage.local.set({ [AUTH_TAB_ID_KEY]: tab.id });
-      addTabListeners();
-      timerUntilAuthTabActivate = setTimeout(() => {
-        moveAuthTabForeground();
-      }, TIME_UNTIL_AUTH_TAB_ACTIVATE);
+  function setupAuthProcess(tabId) {
+    setAuthInProgressStatus(true);
+    authTabId = tabId;
+    chrome.storage.local.set({ [AUTH_TAB_ID_KEY]: tabId });
+    addTabListeners();
+    timerUntilAuthTabActivate = setTimeout(() => {
+      moveAuthTabForeground();
+    }, TIME_UNTIL_AUTH_TAB_ACTIVATE);
+  }
+
+  function createAuthTab() {
+    chrome.tabs.create(
+      {
+        url,
+        active: !tryBg,
+      },
+      (tab) => {
+        setupAuthProcess(tab.id);
+      }
+    );
+  }
+
+  function updateAuthTab(tabId) {
+    chrome.tabs.update(
+      tabId,
+      {
+        url,
+        active: !tryBg,
+      },
+      (tab) => {
+        if (!getAuthInProgressStatus()) {
+          setupAuthProcess(tab.id);
+        }
+      }
+    );
+  }
+
+  chrome.storage.local.get([AUTH_TAB_ID_KEY], function (result) {
+    let authTabId = result[AUTH_TAB_ID_KEY];
+
+    if (authTabId) {
+      // Check if authTab still exists
+      chrome.tabs.get(authTabId, (tab) => {
+        if (chrome.runtime.lastError) {
+          createAuthTab();
+        } else {
+          updateAuthTab(tab.id);
+        }
+      });
+    } else {
+      createAuthTab();
     }
-  );
+  });
 }
 
 export function clearAuthTempData() {
