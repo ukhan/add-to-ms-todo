@@ -198,6 +198,7 @@ function launchAltAuthFlow({ url, tryBg }, cb) {
       removeTabListeners();
       goLastTab();
       setAuthInProgressStatus(false);
+      clearAuthTempData();
       notification(t('UserCancelAuth'));
     }
   }
@@ -217,6 +218,7 @@ function launchAltAuthFlow({ url, tryBg }, cb) {
     clearTimeout(timerUntilAuthTabActivate);
     chrome.tabs.remove(authTabId);
     goLastTab();
+    clearAuthTempData();
     if (!itRefresh) {
       notification(t('authSuccess'));
     }
@@ -249,6 +251,14 @@ function launchAltAuthFlow({ url, tryBg }, cb) {
       }, TIME_UNTIL_AUTH_TAB_ACTIVATE);
     }
   );
+}
+
+export function clearAuthTempData() {
+  chrome.storage.local.remove([
+    BEFORE_AUTH_TAB_ID_KEY,
+    AUTH_TAB_ID_KEY,
+    CODE_VERIFIER_KEY,
+  ]);
 }
 
 export function bgAuth(tryUseCookie = false) {

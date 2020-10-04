@@ -185,6 +185,7 @@ import {
   timestamp,
   scope,
   redirect_uri,
+  clearAuthTempData,
 } from './helpers/auth';
 
 window.authInProcess = false;
@@ -208,6 +209,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
       function closeAuthTab() {
         window.authInProcess = true;
         chrome.tabs.remove(authTabId);
+        clearAuthTempData();
         gotoBeforeAuthTab();
       }
 
@@ -263,6 +265,7 @@ chrome.tabs.onRemoved.addListener((tabId) => {
       if (tabId === result[AUTH_TAB_ID_KEY]) {
         window.authInProcess = false;
         gotoBeforeAuthTab();
+        clearAuthTempData();
         notification(t('UserCancelAuth'));
       }
     });
