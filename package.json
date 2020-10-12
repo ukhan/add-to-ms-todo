@@ -3,6 +3,7 @@
   "version": "0.19.2",
   "scripts": {
     "dev": "webpack --mode=development",
+    "dev:edge": "webpack --mode=development --edge",
     "dev:watch": "webpack --mode=development --watch",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -11,8 +12,11 @@
     "zip:beta": "cd dist && cross-env-shell bestzip ../release/$npm_package_name-$npm_package_version-beta.zip *",
     "build:beta": "npm run clear && npm run prod:beta && npm run zip:beta",
     "prod:stable": "webpack --mode=production",
+    "prod:stable:edge": "webpack --mode=production --edge",
     "zip:stable": "cd dist && cross-env-shell bestzip ../release/$npm_package_name-$npm_package_version.zip *",
-    "build:stable": "npm run clear && npm run prod:stable && npm run zip:stable"
+    "zip:stable:edge": "cd dist && cross-env-shell bestzip ../release/$npm_package_name-$npm_package_version-edge.zip *",
+    "build:stable": "npm run clear && npm run prod:stable && npm run zip:stable",
+    "build:stable:edge": "npm run clear && npm run prod:stable:edge && npm run zip:stable:edge"
   },
   "author": "Pavel Ukhan <pavel.ukhan@gmail.com>",
   "private": true,
