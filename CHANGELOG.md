@@ -1,5 +1,9 @@
 # Release Notes
 
+## v0.19.3 (2020-10-14)
+
+- Fixed a bug that occurred if, at the time of authentication, only one tab remained open.
+
 ## v0.19.2 (2020-10-04)
 
 - Fixed the error that occurs when a long enough time between the start of the authentication process and its completion.

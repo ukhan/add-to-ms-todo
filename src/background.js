@@ -192,8 +192,12 @@ window.authInProcess = false;
 
 function gotoBeforeAuthTab() {
   chrome.storage.local.get([BEFORE_AUTH_TAB_ID_KEY], function (result) {
-    chrome.tabs.update(result[BEFORE_AUTH_TAB_ID_KEY], {
-      active: true,
+    chrome.tabs.get(result[BEFORE_AUTH_TAB_ID_KEY], (tab) => {
+      if (!chrome.runtime.lastError && tab) {
+        chrome.tabs.update(tab.id, {
+          active: true,
+        });
+      }
     });
   });
 }
@@ -207,10 +211,17 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
       let codeVerifier = result[CODE_VERIFIER_KEY];
 
       function closeAuthTab() {
-        window.authInProcess = true;
-        chrome.tabs.remove(authTabId);
-        clearAuthTempData();
         gotoBeforeAuthTab();
+        clearAuthTempData();
+        chrome.tabs.query({}, (tabs) => {
+          if (tabs.length === 1) {
+            chrome.tabs.create({}, () => {
+              chrome.tabs.remove(authTabId);
+            });
+          } else {
+            chrome.tabs.remove(authTabId);
+          }
+        });
       }
 
       if (tabId === authTabId) {
@@ -270,5 +281,4 @@ chrome.tabs.onRemoved.addListener((tabId) => {
       }
     });
   }
-  window.authInProcess = false;
 });

@@ -217,11 +217,22 @@ function launchAltAuthFlow({ url, tryBg }, cb) {
   }
 
   function closeAuthTab() {
+    let localAuthTabId = authTabId;
+
+    authTabId = undefined;
+    clearAuthTempData();
     removeTabListeners();
     clearTimeout(timerUntilAuthTabActivate);
-    chrome.tabs.remove(authTabId);
+    chrome.tabs.query({}, (tabs) => {
+      if (tabs.length === 1) {
+        chrome.tabs.create({}, () => {
+          chrome.tabs.remove(localAuthTabId);
+        });
+      } else {
+        chrome.tabs.remove(localAuthTabId);
+      }
+    });
     goLastTab();
-    clearAuthTempData();
     if (!itRefresh) {
       notification(t('authSuccess'));
     }
@@ -232,7 +243,11 @@ function launchAltAuthFlow({ url, tryBg }, cb) {
   }
 
   function goLastTab() {
-    chrome.tabs.update(lastTabId, { active: true });
+    chrome.tabs.get(lastTabId, (tab) => {
+      if (!chrome.runtime.lastError && tab) {
+        chrome.tabs.update(tab.id, { active: true });
+      }
+    });
   }
 
   chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
