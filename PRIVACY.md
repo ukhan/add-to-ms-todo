@@ -20,4 +20,4 @@ The extension uses only this data and only with this purpose.
 
 ## Authentication
 
-The extension uses the OAuth 2.0 authorization code flow. Accordingly, the extension does not gain access to your password but uses a temporary access token, which you can revoke at any time in the account settings.
+The extension uses the OAuth 2.0 authorization code flow. Accordingly, the extension does not gain access to your password but uses a temporary access token, which you can revoke at any time in the [account settings](https://account.live.com/consent/Manage).
