@@ -173,7 +173,8 @@
 }
 .options-form {
   width: 480px;
-  margin-left: 25px;
+  margin-left: auto;
+  margin-right: auto;
 }
 .el-form-item__content,
 .el-form-item__label {
@@ -186,9 +187,6 @@
   width: 110px;
   padding-left: 10px;
 }
-/* .reminder-interval-picker {
-  width: 130px !important;
-} */
 .reminder-time-step.en label,
 .default-reminder-time.en label,
 .default-list label {

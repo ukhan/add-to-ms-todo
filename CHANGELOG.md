@@ -1,5 +1,9 @@
 # Release Notes
 
+## v0.19.4 (2020-10-15)
+
+- Full Page Options (Edge's embedded settings are pretty bad).
+
 ## v0.19.3 (2020-10-14)
 
 - Fixed a bug that occurred if, at the time of authentication, only one tab remained open.

@@ -14,7 +14,7 @@ import OptionsUI from './components/OptionsUI.vue';
 const locales = {
   en: localeEN,
   ru: localeRU,
-  uk: localeUK
+  uk: localeUK,
 };
 
 let locale =
@@ -28,14 +28,23 @@ new Vue({
   el: '#options-ui',
   data() {
     return {
-      config: {}
+      config: {},
     };
   },
   async created() {
     this.config = await getConfig();
   },
-  render: h => h(OptionsUI)
+  render: (h) => h(OptionsUI),
 });
 
+const extName = chrome.i18n.getMessage('extName');
+const settings = chrome.i18n.getMessage('Settings');
+const title = chrome.i18n.getUILanguage().startsWith('en-')
+  ? `${extName} ${settings}`
+  : `${settings} ${extName}`;
+
 document.documentElement.lang = currentLocale;
+document.title = title;
+document.getElementById('title').innerText = title;
+
 setThemeSwitcher();
