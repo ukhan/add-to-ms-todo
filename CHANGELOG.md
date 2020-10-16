@@ -1,5 +1,9 @@
 # Release Notes
 
+## v0.19.5 (2020-10-17)
+
+- URLs for Edge context menu.
+
 ## v0.19.4 (2020-10-15)
 
 - Full Page Options (Edge's embedded settings are pretty bad).
