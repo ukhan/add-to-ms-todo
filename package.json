@@ -3,8 +3,9 @@
   "version": "0.19.5",
   "scripts": {
     "dev": "webpack --mode=development",
-    "dev:edge": "webpack --mode=development --edge",
     "dev:watch": "webpack --mode=development --watch",
+    "dev:edge": "webpack --mode=development --edge",
+    "dev:firefox": "webpack --mode=development --firefox",
     "test": "jest",
     "test:watch": "jest --watch",
     "clear": "rimraf ./dist",
@@ -13,10 +14,13 @@
     "build:beta": "npm run clear && npm run prod:beta && npm run zip:beta",
     "prod:stable": "webpack --mode=production",
     "prod:stable:edge": "webpack --mode=production --edge",
+    "prod:stable:firefox": "webpack --mode=production --firefox",
     "zip:stable": "cd dist && cross-env-shell bestzip ../release/$npm_package_name-$npm_package_version.zip *",
     "zip:stable:edge": "cd dist && cross-env-shell bestzip ../release/$npm_package_name-$npm_package_version-edge.zip *",
+    "zip:stable:firefox": "cd dist && cross-env-shell bestzip ../release/$npm_package_name-$npm_package_version-firefox.zip *",
     "build:stable": "npm run clear && npm run prod:stable && npm run zip:stable",
-    "build:stable:edge": "npm run clear && npm run prod:stable:edge && npm run zip:stable:edge"
+    "build:stable:edge": "npm run clear && npm run prod:stable:edge && npm run zip:stable:edge",
+    "build:stable:firefox": "npm run clear && npm run prod:stable:firefox && npm run zip:stable:firefox"
   },
   "author": "Pavel Ukhan <pavel.ukhan@gmail.com>",
   "private": true,

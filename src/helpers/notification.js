@@ -1,4 +1,5 @@
 import { t } from './i18n';
+import { isFirefox } from './browser';
 
 const notificationTimeout = 5000; // in milliseconds
 
@@ -7,23 +8,26 @@ export function notification(message, requireInteraction = false, cb) {
     message = message.message;
   }
 
-  return new Promise(resolve => {
-    chrome.notifications.create(
-      {
-        type: 'basic',
-        iconUrl: 'icons/todo-128.png',
-        title: t('extName'),
-        message,
-        requireInteraction,
-        silent: true
-      },
-      id => {
-        if (typeof cb === 'function') {
-          cb();
-        }
-        resolve(id);
+  return new Promise((resolve) => {
+    let notificationOptions = {
+      type: 'basic',
+      iconUrl: 'icons/todo-128.png',
+      title: t('extName'),
+      message,
+    };
+    let chromiumOptions = {
+      requireInteraction,
+      silent: true,
+    };
+    if (!isFirefox()) {
+      notificationOptions = { ...notificationOptions, ...chromiumOptions };
+    }
+    chrome.notifications.create(notificationOptions, (id) => {
+      if (typeof cb === 'function') {
+        cb();
       }
-    );
+      resolve(id);
+    });
   });
 }
 

@@ -17,11 +17,6 @@
     "default_popup": "popup.html",
     "default_title": "__MSG_BrowserActionTitle__"
   },
-  "background": {
-    "scripts": ["background.js"],
-    "persistent": false
-  },
-  "options_page": "options.html",
   "commands": {
     "QUICK_ADD": {
       "description": "__MSG_QuickAddCommandDescription__"

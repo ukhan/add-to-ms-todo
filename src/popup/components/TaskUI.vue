@@ -330,7 +330,7 @@ export default {
 
     getTaskDescription() {
       return this.tabInfo.selected.trim().length
-        ? `${this.tabInfo.selected}\n\n ${this.tabInfo.url}`
+        ? `${this.tabInfo.selected}\n\n${this.tabInfo.url}`
         : this.tabInfo.url;
     },
 

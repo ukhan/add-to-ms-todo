@@ -1,4 +1,4 @@
-import manifest from '../manifest.json';
+import manifest from '../manifest/base.json';
 
 export const defaultLocale = manifest.default_locale;
 

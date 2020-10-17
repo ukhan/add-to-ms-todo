@@ -1,12 +1,14 @@
+import storage from './storage';
+
 const PRESAVE_KEY = 'presave';
 const GARBAGE_COLLECT_INTERVAL = 60 * 60 * 1000; // 1 hour in ms
 
 export function preSave(task, tabInfo) {
-  loadStates().then(states => {
+  loadStates().then((states) => {
     states[tabInfo.id] = {
       dt: Date.now(),
       url: tabInfo.url,
-      task
+      task,
     };
     saveStates(states);
   });
@@ -15,7 +17,7 @@ export function preSave(task, tabInfo) {
 export function preLoad(tabInfo) {
   return new Promise((resolve, reject) => {
     loadStates()
-      .then(states => {
+      .then((states) => {
         let task =
           states[tabInfo.id] && states[tabInfo.id].url === tabInfo.url
             ? states[tabInfo.id].task
@@ -27,7 +29,7 @@ export function preLoad(tabInfo) {
 }
 
 export function preDelete(tabId) {
-  loadStates().then(states => {
+  loadStates().then((states) => {
     delete states[tabId];
     states = garbageCollector(states);
     saveStates(states);
@@ -40,7 +42,7 @@ export function preClear() {
 
 function loadStates() {
   return new Promise((resolve, reject) => {
-    chrome.storage.local.get(PRESAVE_KEY, function(result) {
+    storage.local.get(PRESAVE_KEY, function (result) {
       if (chrome.runtime.lastError) {
         reject(chrome.runtime.lastError);
       }
@@ -53,7 +55,7 @@ function loadStates() {
 function saveStates(states) {
   let ps = {};
   ps[PRESAVE_KEY] = states;
-  chrome.storage.local.set(ps);
+  storage.local.set(ps);
 }
 
 function garbageCollector(states) {

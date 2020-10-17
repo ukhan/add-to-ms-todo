@@ -5,6 +5,7 @@ import getTabInfo from './tab';
 import getLinkTitle from './link';
 import { notification, closeNotification } from './notification';
 import { woodpeckerFetch } from './fetch';
+import storage from './storage';
 
 const baseUrl = 'https://outlook.office.com/api/v2.0/me';
 
@@ -23,7 +24,7 @@ export async function getFolders() {
 
         let folders = response && 'folders' in response ? response.folders : [];
         if (folders.length) {
-          chrome.storage.local.set({ folders });
+          storage.local.set({ folders });
         }
         resolve(folders);
       }

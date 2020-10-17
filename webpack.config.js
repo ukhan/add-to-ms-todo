@@ -10,11 +10,31 @@ const WebpackExtensionManifestPlugin = require('webpack-extension-manifest-plugi
 const { merge } = require('webpack-merge');
 const resolve = require('path').resolve;
 const webpack = require('webpack');
+const dotEnv = new Dotenv();
 
-const manifest = require('./src/manifest.json');
+const manifestBase = require('./src/manifest/base.json');
+const manifestChrome = require('./src/manifest/chrome.json');
+const manifestFireFox = require('./src/manifest/firefox.json');
 const pkg = require('./package.json');
 
 module.exports = (env, argv) => {
+  let manifestConfig = {
+    base: manifestBase,
+    extend: { version: pkg.version },
+  };
+  if (argv.firefox) {
+    const extID = dotEnv.definitions['process.env.FF_EXT_ID'].replace(/"/g, '');
+    manifestConfig.extend = { ...manifestConfig.extend, ...manifestFireFox };
+    manifestConfig.extend.browser_specific_settings.gecko.id = `{${extID}}`;
+  } else {
+    manifestConfig.extend = { ...manifestConfig.extend, ...manifestChrome };
+    if (argv.mode !== 'production') {
+      manifestConfig.extend.key = dotEnv.definitions[
+        'process.env.EXTENSION_KEY'
+      ].replace(/"/g, '');
+    }
+  }
+
   const config = {
     entry: {
       background: './src/background.js',
@@ -92,6 +112,9 @@ module.exports = (env, argv) => {
               ],
             }
       ),
+      new WebpackExtensionManifestPlugin({
+        config: manifestConfig,
+      }),
       new MiniCssExtractPlugin({
         filename: '[name].css',
       }),
@@ -120,36 +143,13 @@ module.exports = (env, argv) => {
             new OptimizeCSSAssetsPlugin({}),
           ],
         },
-        plugins: [
-          new WebpackExtensionManifestPlugin({
-            config: {
-              base: manifest,
-              extend: { version: pkg.version },
-            },
-          }),
-        ],
       },
       config
     );
   } else {
     // development mode
-    const dotEnv = new Dotenv();
 
     return merge(config, {
-      plugins: [
-        new WebpackExtensionManifestPlugin({
-          config: {
-            base: manifest,
-            extend: {
-              version: pkg.version,
-              key: dotEnv.definitions['process.env.EXTENSION_KEY'].replace(
-                /"/g,
-                ''
-              ),
-            },
-          },
-        }),
-      ],
       devtool: 'inline-source-map',
     });
   }

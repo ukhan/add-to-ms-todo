@@ -1,0 +1,13 @@
+{
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "options_ui": {
+    "page": "options.html"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{51b78eb9-9d57-43fd-a1f4-069d9f424166}"
+    }
+  }
+}

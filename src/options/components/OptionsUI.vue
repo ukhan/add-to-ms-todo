@@ -250,6 +250,7 @@ import { set as setConfig } from '@/helpers/config';
 import { t, currentLocale } from '@/helpers/i18n';
 import { padZero, formatTime } from '@/helpers/utils';
 import { getFolders } from '@/helpers/task';
+import storage from '@/helpers/storage';
 import TimePicker from '@/components/TimePicker';
 
 const p = require('../../../package.json');
@@ -331,7 +332,7 @@ export default {
     },
 
     async loadLists() {
-      chrome.storage.local.get(['folders'], async (res) => {
+      storage.local.get(['folders'], async (res) => {
         this.lists = res.folders || [];
         let folders = await getFolders();
         if (folders.length) {

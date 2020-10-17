@@ -1,4 +1,6 @@
 import { currentLocale } from './i18n';
+import storage from './storage';
+
 const CONFIG_KEY = 'cfg';
 
 const isCyrillic = currentLocale === 'uk' || currentLocale === 'ru';
@@ -25,7 +27,7 @@ const defaultConfig = {
 
 export function get() {
   return new Promise((resolve, reject) => {
-    chrome.storage.sync.get(CONFIG_KEY, (items) => {
+    storage.sync.get(CONFIG_KEY, (items) => {
       if (chrome.runtime.lastError) {
         reject(chrome.runtime.lastError);
       }
@@ -44,7 +46,7 @@ export function set(config) {
     let cfg = {};
 
     cfg[CONFIG_KEY] = config;
-    chrome.storage.sync.set(cfg, () => {
+    storage.sync.set(cfg, () => {
       if (chrome.runtime.lastError) {
         reject(chrome.runtime.lastError);
       }

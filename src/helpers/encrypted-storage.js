@@ -1,4 +1,5 @@
 import { encrypt, decrypt } from './cipher';
+import storage from './storage';
 
 /**
  * @param {Object} items
@@ -10,7 +11,7 @@ export function set(items) {
     encryptedItems[key] = encrypt(value).toString();
   }
 
-  chrome.storage.sync.set(encryptedItems);
+  storage.sync.set(encryptedItems);
 }
 
 /**
@@ -18,7 +19,7 @@ export function set(items) {
  */
 export function get(keys) {
   return new Promise((resolve, reject) => {
-    chrome.storage.sync.get(keys, items => {
+    storage.sync.get(keys, (items) => {
       if (chrome.runtime.lastError) {
         reject(chrome.runtime.lastError);
       }

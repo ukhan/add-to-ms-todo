@@ -20,6 +20,7 @@ import {
   me,
   logout,
 } from '@/helpers/auth';
+import storage from '@/helpers/storage';
 import { getFolders } from '@/helpers/task';
 import LoadingUI from './LoadingUI';
 import LoginUI from './LoginUI';
@@ -57,7 +58,7 @@ export default {
     },
 
     async loadFolders() {
-      chrome.storage.local.get(['folders'], async (res) => {
+      storage.local.get(['folders'], async (res) => {
         this.lists = res.folders || [];
         let folders = await getFolders();
         if (folders.length) {

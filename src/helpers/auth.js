@@ -3,7 +3,8 @@ const urlParse = require('url-parse');
 import { create as createPKCE } from 'pkce';
 
 import notification from './notification';
-import storage from './encrypted-storage';
+import encStorage from './encrypted-storage';
+import storage from './storage';
 import { safeJson } from './fetch';
 import { set as setConfig, get as getConfig } from './config';
 import { createQuickAddMenu, removeQuickAddMenu } from './context-menu';
@@ -44,7 +45,7 @@ export async function isAuthenticated(authMethod = CheckAuthMethod.FAST) {
 
   switch (authMethod) {
     case CheckAuthMethod.FAST:
-      access_token = await storage.get('access_token');
+      access_token = await encStorage.get('access_token');
       break;
     case CheckAuthMethod.NORMAL:
       access_token = await getToken();
@@ -92,7 +93,7 @@ export async function getToken(force = false, direct = false) {
     expired_at,
     refresh_token,
     refresh_token_expired_at,
-  } = await storage.get([
+  } = await encStorage.get([
     'access_token',
     'expired_at',
     'refresh_token',
@@ -133,7 +134,7 @@ export function bgRefreshToken(refresh_token, expired_at) {
         }
       })
       .then((data) => {
-        storage.set({
+        encStorage.set({
           access_token: data.access_token,
           refresh_token: data.refresh_token,
           expired_at: timestamp() + data.expires_in,
@@ -143,7 +144,7 @@ export function bgRefreshToken(refresh_token, expired_at) {
       })
       .catch((err) => reject(err));
   }).catch((err) => {
-    storage.remove([
+    encStorage.remove([
       'access_token',
       'refresh_token',
       'expired_at',
@@ -252,13 +253,13 @@ function launchAltAuthFlow({ url, tryBg }, cb) {
 
   chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
     lastTabId = tabs[0].id;
-    chrome.storage.local.set({ [BEFORE_AUTH_TAB_ID_KEY]: tabs[0].id });
+    storage.local.set({ [BEFORE_AUTH_TAB_ID_KEY]: tabs[0].id });
   });
 
   function setupAuthProcess(tabId) {
     setAuthInProgressStatus(true);
     authTabId = tabId;
-    chrome.storage.local.set({ [AUTH_TAB_ID_KEY]: tabId });
+    storage.local.set({ [AUTH_TAB_ID_KEY]: tabId });
     addTabListeners();
     timerUntilAuthTabActivate = setTimeout(() => {
       moveAuthTabForeground();
@@ -292,7 +293,7 @@ function launchAltAuthFlow({ url, tryBg }, cb) {
     );
   }
 
-  chrome.storage.local.get([AUTH_TAB_ID_KEY], function (result) {
+  storage.local.get([AUTH_TAB_ID_KEY], function (result) {
     let authTabId = result[AUTH_TAB_ID_KEY];
 
     if (authTabId) {
@@ -328,7 +329,7 @@ export function bgAuth(tryUseCookie = false) {
     authURL += '&prompt=login';
   }
 
-  chrome.storage.local.set({ [CODE_VERIFIER_KEY]: codeVerifier });
+  storage.local.set({ [CODE_VERIFIER_KEY]: codeVerifier });
 
   return new Promise((resolve, reject) => {
     launchAltAuthFlow(
@@ -363,7 +364,7 @@ export function bgAuth(tryUseCookie = false) {
             }
           })
           .then((data) => {
-            storage.set({
+            encStorage.set({
               access_token: data.access_token,
               refresh_token: data.refresh_token,
               expired_at: timestamp() + data.expires_in,
@@ -395,7 +396,7 @@ export function bgMe(token) {
       .then(safeJson)
       .then((data) => {
         const me = { name: data.DisplayName, email: data.EmailAddress };
-        storage.set(me);
+        encStorage.set(me);
         resolve(me);
       })
       .catch((err) => {
@@ -405,7 +406,7 @@ export function bgMe(token) {
 }
 
 export function me() {
-  return storage.get(['name', 'email']);
+  return encStorage.get(['name', 'email']);
 }
 
 export function logout() {
@@ -423,7 +424,7 @@ function resetDefaultList() {
 }
 
 function authClear() {
-  storage.remove([
+  encStorage.remove([
     'access_token',
     'refresh_token',
     'expired_at',

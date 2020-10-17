@@ -10,6 +10,7 @@ import setThemeSwitcher from '../theme/theme-switcher';
 import { defaultLocale, currentLocale } from '../helpers/i18n';
 import { get as getConfig } from '@/helpers/config';
 import OptionsUI from './components/OptionsUI.vue';
+import { isFirefox } from '@/helpers/browser';
 
 const locales = {
   en: localeEN,

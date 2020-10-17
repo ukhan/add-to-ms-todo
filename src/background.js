@@ -13,6 +13,7 @@ import {
   removeDebugMenu,
 } from './helpers/context-menu';
 import semver from './helpers/semver';
+import storage from './helpers/storage';
 
 chrome.runtime.onInstalled.addListener((details) => {
   let currentVersion = semver(chrome.runtime.getManifest().version);
@@ -174,7 +175,7 @@ function setSurvey(locale) {
 
 const urlParse = require('url-parse');
 import notification from './helpers/notification';
-import storage from './helpers/encrypted-storage';
+import encStorage from './helpers/encrypted-storage';
 import {
   BEFORE_AUTH_TAB_ID_KEY,
   AUTH_TAB_ID_KEY,
@@ -191,7 +192,7 @@ import {
 window.authInProcess = false;
 
 function gotoBeforeAuthTab() {
-  chrome.storage.local.get([BEFORE_AUTH_TAB_ID_KEY], function (result) {
+  storage.local.get([BEFORE_AUTH_TAB_ID_KEY], function (result) {
     chrome.tabs.get(result[BEFORE_AUTH_TAB_ID_KEY], (tab) => {
       if (!chrome.runtime.lastError && tab) {
         chrome.tabs.update(tab.id, {
@@ -204,9 +205,7 @@ function gotoBeforeAuthTab() {
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (!window.authInProcess) {
-    chrome.storage.local.get([AUTH_TAB_ID_KEY, CODE_VERIFIER_KEY], function (
-      result
-    ) {
+    storage.local.get([AUTH_TAB_ID_KEY, CODE_VERIFIER_KEY], function (result) {
       let authTabId = result[AUTH_TAB_ID_KEY];
       let codeVerifier = result[CODE_VERIFIER_KEY];
 
@@ -249,7 +248,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
                 }
               })
               .then((data) => {
-                storage.set({
+                encStorage.set({
                   access_token: data.access_token,
                   refresh_token: data.refresh_token,
                   expired_at: timestamp() + data.expires_in,
@@ -272,7 +271,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 
 chrome.tabs.onRemoved.addListener((tabId) => {
   if (!window.authInProcess) {
-    chrome.storage.local.get([AUTH_TAB_ID_KEY], function (result) {
+    storage.local.get([AUTH_TAB_ID_KEY], function (result) {
       if (tabId === result[AUTH_TAB_ID_KEY]) {
         window.authInProcess = false;
         gotoBeforeAuthTab();
