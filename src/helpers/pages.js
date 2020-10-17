@@ -16,9 +16,9 @@ export default {
   },
   reviews() {
     const review_url =
-      chrome.runtime.id === CHROME_EXT_ID
-        ? CHROME_REVIEWS_URL
-        : EDGE_REVIEWS_URL;
+      chrome.runtime.id === EDGE_REVIEWS_URL
+        ? EDGE_REVIEWS_URL
+        : CHROME_REVIEWS_URL;
     openUrl(review_url);
   },
   support() {
