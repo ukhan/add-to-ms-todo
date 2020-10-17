@@ -6,7 +6,7 @@
       </div>
     </el-row>
     <el-row type="flex" justify="center">
-      <i class="el-icon-loading" :title="t('Loading...')"></i>
+      <i class="el-icon-loading" :title="t('Loading')"></i>
     </el-row>
   </div>
 </template>
@@ -32,7 +32,7 @@ export default {
   name: 'LoadingUI',
   methods: {
     getUrl,
-    t
-  }
+    t,
+  },
 };
 </script>
