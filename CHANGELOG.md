@@ -1,5 +1,9 @@
 # Release Notes
 
+## v0.19.6 (2020-10-19)
+
+- Restored access to the text selected on the page.
+
 ## v0.19.5 (2020-10-17)
 
 - URLs for Edge context menu.

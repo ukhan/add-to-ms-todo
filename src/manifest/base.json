@@ -27,6 +27,7 @@
     "contextMenus",
     "storage",
     "notifications",
+    "activeTab",
     "tabs"
   ]
 }
