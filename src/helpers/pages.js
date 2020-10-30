@@ -24,7 +24,7 @@ export default {
       review_url = FIREFOX_REVIEWS_URL;
     } else {
       review_url =
-        chrome.runtime.id === EDGE_REVIEWS_URL
+        chrome.runtime.id === EDGE_EXT_ID
           ? EDGE_REVIEWS_URL
           : CHROME_REVIEWS_URL;
     }
