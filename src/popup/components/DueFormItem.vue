@@ -5,6 +5,7 @@
         v-model="dueDate"
         type="date"
         :format="dateFormat"
+        value-format="yyyy-MM-dd"
         :picker-options="datePickerOptions"
       >
       </el-date-picker>
@@ -14,7 +15,6 @@
 
 <script>
 import { t as _ } from '@/helpers/i18n';
-import { padZero } from '@/helpers/utils';
 
 export default {
   name: 'DueFormItem',
@@ -43,24 +43,12 @@ export default {
       },
       set(date) {
         this.d = date;
-        this.$emit('input', this.dueISOString);
+        this.$emit('input', date);
       }
-    },
-
-    dueISOString() {
-      if (!this.d) return null;
-
-      let dt = new Date(this.d),
-        day = this.padZero(dt.getDate()),
-        month = this.padZero(dt.getMonth() + 1),
-        year = dt.getFullYear();
-
-      return `${year}-${month}-${day}`;
     }
   },
 
   methods: {
-    padZero,
     _
   }
 };

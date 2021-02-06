@@ -1,5 +1,9 @@
 # Release Notes
 
+## v0.19.7 (2021-02-06)
+
+- Fixed a bug that caused the task due date to be incorrect.
+
 ## v0.19.6 (2020-10-19)
 
 - Restored access to the text selected on the page.
