@@ -38,7 +38,6 @@ export default function getTabInfo() {
       );
     }),
   ]).then((info) => {
-    console.log('INFO:', info); // FIXME
     return { ...info[0], ...info[1] };
   });
 }
