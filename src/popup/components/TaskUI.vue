@@ -1,6 +1,11 @@
 <template>
   <el-form label-position="top" size="small" class="add-task-form">
-    <TextareaFormItem :label="t('Title')" :rows="2" v-model="task.title" />
+    <TextareaFormItem
+      :label="t('Title')"
+      :rows="2"
+      v-model="task.title"
+      autofocus="true"
+    />
 
     <TextareaFormItem
       :label="t('Description')"

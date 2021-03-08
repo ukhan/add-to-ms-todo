@@ -1,6 +1,13 @@
 <template>
   <el-form-item :label="label">
-    <el-input ref="ta" type="textarea" resize="none" :rows="rows" v-model="v">
+    <el-input
+      ref="ta"
+      type="textarea"
+      resize="none"
+      :rows="rows"
+      v-model="v"
+      :autofocus="autofocus"
+    >
     </el-input>
   </el-form-item>
 </template>
@@ -12,7 +19,8 @@ export default {
   props: {
     label: String,
     rows: Number,
-    value: String
+    value: String,
+    autofocus: String,
   },
 
   data() {
@@ -20,7 +28,7 @@ export default {
       ta: undefined,
       prevScrollTop: 0,
       prevCaretRow: 1,
-      lineHeight: undefined
+      lineHeight: undefined,
     };
   },
 
@@ -31,7 +39,7 @@ export default {
       },
       set(value) {
         this.$emit('input', value);
-      }
+      },
     },
 
     rowsCount() {
@@ -40,7 +48,7 @@ export default {
 
     rowsOverflow() {
       return this.rowsCount > this.rows;
-    }
+    },
   },
 
   methods: {
@@ -83,7 +91,7 @@ export default {
       this.$nextTick(() => {
         this.ta.scrollTop = pos;
       });
-    }
+    },
   },
 
   mounted() {
@@ -99,6 +107,6 @@ export default {
   beforeDestroy() {
     this.ta.removeEventListener('keyup', this.handleKeyup);
     this.ta.removeEventListener('mouseup', this.handleKeyup);
-  }
+  },
 };
 </script>
