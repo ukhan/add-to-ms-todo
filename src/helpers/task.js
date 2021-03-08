@@ -81,7 +81,7 @@ export async function quickAddTask(info) {
   let tabInfo = await getTabInfo();
   let title, description;
 
-  if ('linkUrl' in info) {
+  if (info && 'linkUrl' in info) {
     let linkUrl = info.linkUrl;
     let linkTitle = await getLinkTitle(linkUrl);
     let pageInfoTitle = t('CreatedOnPage');
