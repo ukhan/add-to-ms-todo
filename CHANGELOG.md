@@ -1,5 +1,10 @@
 # Release Notes
 
+## v0.19.8 (2021-03-08)
+
+- Fixed run Quick Add command by shortcut.
+- Autofocus for Task Title.
+
 ## v0.19.7 (2021-02-06)
 
 - Fixed a bug that caused the task due date to be incorrect.
