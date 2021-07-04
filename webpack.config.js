@@ -97,21 +97,12 @@ module.exports = (env, argv) => {
         template: 'src/log/log.html',
         chunks: ['log'],
       }),
-      new CopyPlugin(
-        argv.edge
-          ? {
-              patterns: [
-                { from: 'src/icons/edge', to: 'icons' },
-                { from: 'src/assets/edge', to: 'assets' },
-              ],
-            }
-          : {
-              patterns: [
-                { from: 'src/icons', to: 'icons' },
-                { from: 'src/assets', to: 'assets' },
-              ],
-            }
-      ),
+      new CopyPlugin({
+        patterns: [
+          { from: 'src/icons', to: 'icons' },
+          { from: 'src/assets', to: 'assets' },
+        ],
+      }),
       new WebpackExtensionManifestPlugin({
         config: manifestConfig,
       }),
