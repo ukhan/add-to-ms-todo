@@ -1,5 +1,9 @@
 # Release Notes
 
+## v0.20.0 (2021-07-04)
+
+- The extension icon has been changed.
+
 ## v0.19.8 (2021-03-08)
 
 - Fixed run Quick Add command by shortcut.
