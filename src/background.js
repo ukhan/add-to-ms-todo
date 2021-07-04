@@ -1,5 +1,5 @@
 import { bgAuth, bgMe, bgRefreshToken } from './helpers/auth';
-import { currentLocale, t } from './helpers/i18n';
+import { t } from './helpers/i18n';
 import { bgGetFolders, bgAddTask, quickAddTask } from './helpers/task';
 import { closeNotification } from './helpers/notification';
 import { preDelete } from './helpers/presave';
@@ -151,25 +151,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 });
 
 chrome.tabs.onRemoved.addListener(preDelete);
-
-setSurvey(currentLocale);
-
-function setSurvey(locale) {
-  let url;
-
-  switch (locale) {
-    case 'uk':
-    case 'ru':
-      url =
-        'https://docs.google.com/forms/d/e/1FAIpQLScaL7W5yYBDGanpF2OOumeiHft6bFoCuSHh8B_HeC04OX3Hdg/viewform';
-      break;
-    default:
-      url =
-        'https://docs.google.com/forms/d/e/1FAIpQLSeQFxY8T8lSi-k8z3DQ4BmPpFOqQr4ewVCGINldjnwh4M3W6A/viewform';
-  }
-
-  chrome.runtime.setUninstallURL(url);
-}
 
 // In case if Background script gone to inactive state when auth was in process
 
