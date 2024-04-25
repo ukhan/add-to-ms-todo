@@ -22,8 +22,8 @@ chrome.runtime.onInstalled.addListener((details) => {
     let previousVersion = semver(details.previousVersion);
 
     if (
-      parseInt(previousVersion.minor) < 19 &&
-      currentVersion.minor === '19' &&
+      parseInt(previousVersion.minor) < 21 &&
+      currentVersion.minor === '21' &&
       currentVersion.major === '0'
     ) {
       chrome.notifications.create(
@@ -40,8 +40,7 @@ chrome.runtime.onInstalled.addListener((details) => {
             (clickedNotificationId) => {
               if (clickedNotificationId === notificationId) {
                 chrome.tabs.create({
-                  url:
-                    'https://github.com/ukhan/add-to-ms-todo/blob/master/CHANGELOG.md',
+                  url: 'https://github.com/ukhan/add-to-ms-todo/blob/master/CHANGELOG.md',
                 });
                 chrome.notifications.clear(notificationId);
               }
@@ -170,7 +169,13 @@ import {
   clearAuthTempData,
 } from './helpers/auth';
 
-window.authInProcess = false;
+let authInProcess = false;
+chrome.storage.local.onChanged.addListener((changes) => {
+  if (changes.authInProcess) {
+    authInProcess = changes.authInProcess.newValue;
+  }
+});
+chrome.storage.local.set({ authInProcess });
 
 function gotoBeforeAuthTab() {
   storage.local.get([BEFORE_AUTH_TAB_ID_KEY], function (result) {
@@ -185,7 +190,7 @@ function gotoBeforeAuthTab() {
 }
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  if (!window.authInProcess) {
+  if (!authInProcess) {
     storage.local.get([AUTH_TAB_ID_KEY, CODE_VERIFIER_KEY], function (result) {
       let authTabId = result[AUTH_TAB_ID_KEY];
       let codeVerifier = result[CODE_VERIFIER_KEY];
@@ -251,10 +256,10 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 });
 
 chrome.tabs.onRemoved.addListener((tabId) => {
-  if (!window.authInProcess) {
+  if (!authInProcess) {
     storage.local.get([AUTH_TAB_ID_KEY], function (result) {
       if (tabId === result[AUTH_TAB_ID_KEY]) {
-        window.authInProcess = false;
+        chrome.storage.local.set({ authInProcess: false });
         gotoBeforeAuthTab();
         clearAuthTempData();
         notification(t('UserCancelAuth'));

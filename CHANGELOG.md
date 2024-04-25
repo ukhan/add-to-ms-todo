@@ -1,5 +1,9 @@
 # Release Notes
 
+## v0.21.0 (2024-04-28)
+
+- [MV3](https://developer.chrome.com/docs/extensions/develop/migrate/mv2-deprecation-timeline) migration.
+
 ## v0.20.0 (2021-07-04)
 
 - The extension icon has been changed.

@@ -1,5 +1,5 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "__MSG_extName__",
   "description": "__MSG_extDescription__",
   "default_locale": "en",
@@ -8,7 +8,7 @@
     "48": "icons/todo-48.png",
     "128": "icons/todo-128.png"
   },
-  "browser_action": {
+  "action": {
     "default_icon": {
       "16": "icons/todo-16.png",
       "24": "icons/todo-24.png",
@@ -28,6 +28,7 @@
     "storage",
     "notifications",
     "activeTab",
-    "tabs"
+    "tabs",
+    "scripting"
   ]
 }

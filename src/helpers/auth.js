@@ -1,6 +1,5 @@
-const randomstring = require('randomstring');
 const urlParse = require('url-parse');
-import { create as createPKCE } from 'pkce';
+import pkceChallenge from 'pkce-challenge';
 
 import notification from './notification';
 import encStorage from './encrypted-storage';
@@ -88,17 +87,13 @@ export function timestamp() {
  * @param {Boolean} direct Direct refresh without sendMessage to background
  */
 export async function getToken(force = false, direct = false) {
-  const {
-    access_token,
-    expired_at,
-    refresh_token,
-    refresh_token_expired_at,
-  } = await encStorage.get([
-    'access_token',
-    'expired_at',
-    'refresh_token',
-    'refresh_token_expired_at',
-  ]);
+  const { access_token, expired_at, refresh_token, refresh_token_expired_at } =
+    await encStorage.get([
+      'access_token',
+      'expired_at',
+      'refresh_token',
+      'refresh_token_expired_at',
+    ]);
 
   if ((isExpired(expired_at) || force) && refresh_token) {
     if (direct) {
@@ -174,11 +169,11 @@ function launchAltAuthFlow({ url, tryBg }, cb) {
   isAuthenticated().then((res) => (itRefresh = res));
 
   function setAuthInProgressStatus(status) {
-    chrome.extension.getBackgroundPage().authInProcess = status;
+    chrome.storage.local.set({ authInProcess: status });
   }
 
-  function getAuthInProgressStatus() {
-    return chrome.extension.getBackgroundPage().authInProcess;
+  async function getAuthInProgressStatus() {
+    return (await chrome.storage.local.get('authInProcess')).authInProcess;
   }
 
   function authTabUpdatedHandle(tabId, changeInfo, tab) {
@@ -285,8 +280,8 @@ function launchAltAuthFlow({ url, tryBg }, cb) {
         url,
         active: !tryBg,
       },
-      (tab) => {
-        if (!getAuthInProgressStatus()) {
+      async (tab) => {
+        if (!(await getAuthInProgressStatus())) {
           setupAuthProcess(tab.id);
         }
       }
@@ -319,9 +314,10 @@ export function clearAuthTempData() {
   ]);
 }
 
-export function bgAuth(tryUseCookie = false) {
-  const state = randomstring.generate(12);
-  const { codeVerifier, codeChallenge } = createPKCE();
+export async function bgAuth(tryUseCookie = false) {
+  const state = Math.random().toString(36).substring(2, 14);
+  const { code_verifier: codeVerifier, code_challenge: codeChallenge } =
+    await pkceChallenge(128);
 
   let authURL = `${oauthURL}/authorize?client_id=${clientID}&response_type=code&redirect_uri=${redirect_uri}&response_mode=query&scope=${scope}&state=${state}&code_challenge=${codeChallenge}&code_challenge_method=S256`;
 

@@ -21,21 +21,34 @@ export default function getTabInfo() {
         });
       });
     }),
-    new Promise((resolve) => {
-      chrome.tabs.executeScript(
-        {
-          code: 'window.getSelection().toString();',
-        },
-        function (selection) {
-          if (chrome.runtime.lastError) {
-            resolve({ selected: '' });
-          }
-
+    new Promise((resolve, reject) => {
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        if (chrome.runtime.lastError) {
+          reject(chrome.runtime.lastError.message);
+        }
+        if (!tabs.length) {
           resolve({
-            selected: selection && selection.length ? selection[0] : '',
+            selected: '',
           });
         }
-      );
+        chrome.scripting
+          .executeScript({
+            target: { tabId: tabs[0].id },
+            function: () => {
+              return window.getSelection().toString();
+            },
+          })
+          .then((result) => {
+            resolve({
+              selected: result[0].result || '',
+            });
+          })
+          .catch(() => {
+            resolve({
+              selected: '',
+            });
+          });
+      });
     }),
   ]).then((info) => {
     return { ...info[0], ...info[1] };
