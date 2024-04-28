@@ -10,5 +10,6 @@
     "randomstring",
     "taskfolders",
     "webstore"
-  ]
+  ],
+  "files.autoSave": "off"
 }

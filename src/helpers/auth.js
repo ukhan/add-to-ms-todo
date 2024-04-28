@@ -13,8 +13,9 @@ export const oauthURL = 'https://login.microsoftonline.com/common/oauth2/v2.0';
 export const clientID = process.env.CLIENT_ID;
 export const redirect_uri = chrome.identity.getRedirectURL();
 const permissions = [
-  'https://outlook.office.com/user.read',
-  'https://outlook.office.com/tasks.readwrite',
+  'https://graph.microsoft.com/User.Read',
+  'https://graph.microsoft.com/Tasks.ReadWrite',
+  'https://graph.microsoft.com/Tasks.ReadWrite.Shared',
   'offline_access',
 ];
 export const scope = permissions.join('%20');
@@ -382,7 +383,7 @@ export function bgMe(token) {
   if (!token) return;
 
   return new Promise((resolve, reject) => {
-    fetch('https://outlook.office.com/api/v2.0/me', {
+    fetch('https://graph.microsoft.com/v1.0/me', {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -391,7 +392,7 @@ export function bgMe(token) {
     })
       .then(safeJson)
       .then((data) => {
-        const me = { name: data.DisplayName, email: data.EmailAddress };
+        const me = { name: data.displayName, email: data.mail };
         encStorage.set(me);
         resolve(me);
       })

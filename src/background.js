@@ -1,4 +1,4 @@
-import { bgAuth, bgMe, bgRefreshToken } from './helpers/auth';
+import { bgAuth, bgMe, bgRefreshToken, logout } from './helpers/auth';
 import { t } from './helpers/i18n';
 import { bgGetFolders, bgAddTask, quickAddTask } from './helpers/task';
 import { closeNotification } from './helpers/notification';
@@ -26,6 +26,7 @@ chrome.runtime.onInstalled.addListener((details) => {
       currentVersion.minor === '21' &&
       currentVersion.major === '0'
     ) {
+      logout();
       chrome.notifications.create(
         {
           type: 'basic',

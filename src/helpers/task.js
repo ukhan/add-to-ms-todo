@@ -7,9 +7,7 @@ import { notification, closeNotification } from './notification';
 import { woodpeckerFetch } from './fetch';
 import storage from './storage';
 
-const baseUrl = 'https://outlook.office.com/api/v2.0/me';
-
-const FOLDERS_COUNT_CHUNK = 100;
+const baseUrl = 'https://graph.microsoft.com/v1.0/me/todo';
 
 export async function getFolders() {
   let access_token = await getToken();
@@ -33,14 +31,22 @@ export async function getFolders() {
 }
 
 export async function bgGetFolders(access_token) {
-  let config = await getConfig();
-  let debug = config.saveDebugInfo;
-  let url = `${baseUrl}/taskfolders?top=${FOLDERS_COUNT_CHUNK}`;
-  let folders = [];
+  const config = await getConfig();
+  const debug = config.saveDebugInfo;
 
+  const deltaLink = (await chrome.storage.local.get('deltaLink')).deltaLink;
+  let folders = deltaLink
+    ? (await chrome.storage.local.get('folders')).folders
+    : [];
+  const isDelta = deltaLink && folders;
+
+  let url = isDelta ? deltaLink : `${baseUrl}/lists/delta`;
+
+  let chunkData;
   try {
     do {
-      let chunkData = await woodpeckerFetch(
+      if (debug) console.log('[0] URL:', url);
+      chunkData = await woodpeckerFetch(
         url,
         {
           method: 'GET',
@@ -52,17 +58,44 @@ export async function bgGetFolders(access_token) {
         { debug }
       );
       if (debug) console.log('[1] chunkData:', chunkData);
-      let chunkFolders = chunkData.value.map((folder) => {
-        return {
-          id: folder.Id,
-          label: folder.Name,
-          isDefault: folder.IsDefaultFolder,
-        };
-      });
-      if (debug) console.log('[2] chunkFolders:', chunkFolders);
-      folders = folders.concat(chunkFolders);
+
+      if (isDelta) {
+        // update folders
+        chunkData.value.forEach((folder) => {
+          if (folder['@removed']) {
+            folders = folders.filter((f) => f.id !== folder.id);
+          } else {
+            let idx = folders.findIndex((f) => f.id === folder.id);
+            if (idx >= 0) {
+              folders[idx].label = folder.displayName;
+              folders[idx].isDefault =
+                folder.wellknownListName === 'defaultList';
+            } else {
+              folders.push({
+                id: folder.id,
+                label: folder.displayName,
+                isDefault: folder.wellknownListName === 'defaultList',
+              });
+            }
+          }
+        });
+      } else {
+        // append folders
+        let chunkFolders = chunkData.value.map((folder) => {
+          return {
+            id: folder.id,
+            label: folder.displayName,
+            isDefault: folder.wellknownListName === 'defaultList',
+          };
+        });
+        if (debug) console.log('[2] chunkFolders:', chunkFolders);
+        folders = folders.concat(chunkFolders);
+      }
+
       url = chunkData['@odata.nextLink'] || '';
     } while (url !== '');
+
+    chrome.storage.local.set({ deltaLink: chunkData['@odata.deltaLink'] });
   } catch (res) {
     folders = [];
     let err = t('GetListsError');
@@ -72,6 +105,7 @@ export async function bgGetFolders(access_token) {
     notification(err);
   }
   if (debug) console.log('[3] folders:', folders);
+
   return folders;
 }
 
@@ -134,33 +168,47 @@ export async function addTask(task) {
 
 export async function bgAddTask(access_token, task) {
   let config = await getConfig();
-  let url =
-    'list' in task
-      ? `${baseUrl}/taskfolders('${task.list}')/tasks`
-      : `${baseUrl}/tasks`;
+  const debug = config.saveDebugInfo;
+
+  if (debug) console.log('[0] Task:', task);
+
+  let taskList;
+  if (!task.list) {
+    const folders = (await chrome.storage.local.get('folders')).folders;
+    taskList = folders.find((f) => f.isDefault).id;
+  } else {
+    taskList = task.list;
+  }
+  if (debug) console.log('[1] TaskList:', taskList);
+
+  const url = `${baseUrl}/lists/${taskList}/tasks`;
+  if (debug) console.log('[2] URL:', url);
+
   let T = {
-    Subject: task.title,
-    Body: {
-      Content: task.description,
-      ContentType: 'Text',
+    title: task.title,
+    body: {
+      content: task.description,
+      contentType: 'text',
     },
-    Importance: task.importance ? 'High' : 'Normal',
+    importance: task.importance ? 'high' : 'normal',
   };
 
   if (task.reminder) {
-    T.IsReminderOn = true;
-    T.ReminderDateTime = {
-      DateTime: task.reminder,
-      TimeZone: currentTimeZone(),
+    T.isReminderOn = true;
+    T.reminderDateTime = {
+      dateTime: task.reminder,
+      timeZone: currentTimeZone(),
     };
   }
 
   if (task.due) {
-    T.DueDateTime = {
-      DateTime: task.due,
-      TimeZone: currentTimeZone(),
+    T.dueDateTime = {
+      dateTime: task.due,
+      timeZone: currentTimeZone(),
     };
   }
+
+  if (debug) console.log('[3] Task:', T);
 
   return woodpeckerFetch(
     url,
@@ -169,6 +217,7 @@ export async function bgAddTask(access_token, task) {
       headers: {
         Authorization: `Bearer ${access_token}`,
         'Content-Type': 'application/json',
+        // Prefer: 'outlook.body-content-type="HTML"',
       },
       body: JSON.stringify(T),
     },
