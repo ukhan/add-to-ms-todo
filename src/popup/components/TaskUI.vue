@@ -109,6 +109,10 @@
   height: 3.8em;
   padding-top: 12px;
 }
+.el-select-dropdown {
+  left: 8px !important;
+  max-width: 400px !important;
+}
 .el-select--small .el-input__inner {
   padding-left: 10px;
 }
