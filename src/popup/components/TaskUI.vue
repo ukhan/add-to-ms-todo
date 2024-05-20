@@ -5,6 +5,7 @@
       :rows="2"
       v-model="task.title"
       autofocus="true"
+      @enter-pressed="save"
     />
 
     <TextareaFormItem

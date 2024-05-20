@@ -56,6 +56,13 @@ export default {
       return this.ta.value.substr(0, this.ta.selectionStart).split('\n').length;
     },
 
+    handleKeydown(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        this.$emit('enter-pressed');
+      }
+    },
+
     handleKeyup(e) {
       if (!this.rowsOverflow) return;
 
@@ -100,11 +107,13 @@ export default {
       getComputedStyle(this.ta).getPropertyValue('line-height')
     );
 
+    this.ta.addEventListener('keydown', this.handleKeydown);
     this.ta.addEventListener('keyup', this.handleKeyup);
     this.ta.addEventListener('mouseup', this.handleKeyup);
   },
 
   beforeDestroy() {
+    this.ta.removeEventListener('keydown', this.handleKeydown);
     this.ta.removeEventListener('keyup', this.handleKeyup);
     this.ta.removeEventListener('mouseup', this.handleKeyup);
   },
