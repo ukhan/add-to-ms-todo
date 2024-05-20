@@ -11,5 +11,8 @@
     "taskfolders",
     "webstore"
   ],
-  "files.autoSave": "off"
+  "files.autoSave": "off",
+  "[vue]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }
