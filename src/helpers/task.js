@@ -130,6 +130,7 @@ export async function quickAddTask(info) {
   }
 
   let task = { title, description };
+  if (config.listDefault) task.list = config.listDefault;
 
   return bgAddTask(access_token, task)
     .then(() => {
