@@ -2,8 +2,10 @@
 
 ## v0.21.0 (2024-05-21)
 
-- [MV3](https://developer.chrome.com/docs/extensions/develop/migrate/mv2-deprecation-timeline) migration.
-- [Microsoft Graph To Do API](https://learn.microsoft.com/en-us/graph/api/resources/todo-overview) migration.
+- Migration to [MV3](https://developer.chrome.com/docs/extensions/develop/migrate/mv2-deprecation-timeline).
+- Migration to [Microsoft Graph To Do API](https://learn.microsoft.com/en-us/graph/api/resources/todo-overview).
+- Fixed several bugs (#39, #42, #43).
+- Sort lists by name (can be changed in the settings).
 
 ## v0.20.0 (2021-07-04)
 
