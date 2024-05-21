@@ -16,6 +16,7 @@ const defaultConfig = {
   firstDayOfWeek: isCyrillic ? 1 : 7,
   listDefault: '',
   useLastUsedList: false,
+  sortListsByName: true,
   showReminderDate: true,
   showDueDate: false,
   preFill: true,

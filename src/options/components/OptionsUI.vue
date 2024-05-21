@@ -114,6 +114,12 @@
     <el-form-item :label="t('RememberLastUsedList')" label-width="350px">
       <el-switch v-model="config.useLastUsedList"></el-switch>
     </el-form-item>
+    <el-form-item :label="t('SortListsByName')" label-width="350px">
+      <el-switch
+        v-model="config.sortListsByName"
+        @change="reloadLists"
+      ></el-switch>
+    </el-form-item>
     <el-form-item :label="t('ShowReminderDate')" label-width="350px">
       <el-switch v-model="config.showReminderDate"></el-switch>
     </el-form-item>
@@ -339,6 +345,12 @@ export default {
           this.lists = folders;
         }
       });
+    },
+
+    async reloadLists() {
+      chrome.storage.local.remove('deltaLink');
+      chrome.storage.local.remove('folders');
+      this.loadLists();
     },
 
     t,

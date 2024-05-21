@@ -104,7 +104,12 @@ export async function bgGetFolders(access_token) {
     }
     notification(err);
   }
-  if (debug) console.log('[3] folders:', folders);
+
+  if (debug) console.log('[3.1] folders:', folders);
+  if (config.sortListsByName) {
+    folders.sort((a, b) => a.label.localeCompare(b.label));
+    if (debug) console.log('[3.2] sorted folders:', folders);
+  }
 
   return folders;
 }

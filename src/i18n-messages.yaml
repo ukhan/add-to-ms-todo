@@ -189,6 +189,11 @@ RememberLastUsedList:
   uk: Запам'ятовувати останній використаний список
   ru: Запоминать последний использованный список
 
+SortListsByName:
+  en: Sort lists by name
+  uk: Сортувати списки за назвою
+  ru: Сортировать списки по имени
+
 PreFill:
   en: Pre-fill the form
   uk: Попередньо заповнити форму
