@@ -2,289 +2,231 @@ extName: Add to Microsoft To Do
 extDescription:
   en: It's the easiest way to save anything from the web to your ToDo lists.
   uk: Це найпростіший спосіб зберегти що-небудь з Інтернету до ваших списків завдань.
-  ru: Это самый простой способ сохранить что-либо из Интернета в ваших списках дел.
 
 BrowserActionTitle:
   en: Add to Microsoft To Do
   uk: Додати в Microsoft To Do
-  ru: Добавить в Microsoft To Do
 
 QuickAddCommandDescription:
   en: Quick add task
   uk: Швидке додавання задачі
-  ru: Быстрое добавление задачи
 
 OpenMicrosoftToDo:
   en: Open Microsoft To Do
   uk: Відкрити Microsoft To Do
-  ru: Открыть Microsoft To Do
 
 Title:
   en: Title
   uk: Назва
-  ru: Название
 
 Description:
   en: Description
   uk: Опис
-  ru: Описание
 
 List:
   en: List
   uk: Список
-  ru: Список
 
 Importance:
   en: Importance
   uk: Важливість
-  ru: Важность
 
 ReminderDate:
   en: Date Reminder
   uk: Дата нагадування
-  ru: Дата напоминания
 
 ReminderTime:
   en: Reminder time
   uk: Час нагадування
-  ru: Время напоминания
 
 SaveTask:
   en: Add Task
   uk: Зберегти
-  ru: Сохранить
 
 SuccessNotification:
   en: Task successfully added.
   uk: Задача успішно додана.
-  ru: Задача успешно добавлена.
 
 ErrorNotification:
   en: An error occurred while saving the task
   uk: При збереженні задачі сталася помилка
-  ru: При сохранении задачи произошла ошибка
 
 Loading:
   en: Loading...
   uk: Завантаження...
-  ru: Загрузка...
 
 GetStarted:
   en: Get started
   uk: Початок роботи
-  ru: Начало работы
 
 Logout:
   en: Logout
   uk: Вихід
-  ru: Выход
 
 Settings:
   en: Settings
   uk: Налаштування
-  ru: Настройки
 
 ClearOrFill:
   en: Clear or fill out the form
   uk: Очистити або заповнити форму
-  ru: Очистить или заполнить форму
 
 ClearForm:
   en: Clear the form
   uk: Очистити форму
-  ru: Очистить форму
 
 FillForm:
   en: Fill out the form
   uk: Заповнити форму
-  ru: Заполнить форму
 
 Account:
   en: Account
   uk: Обліковий запис
-  ru: Учетная запись
 
 SignIn:
   en: Sign in
   uk: Увійти
-  ru: Войти
 
 Quit:
   en: logout
   uk: вийти
-  ru: выйти
 
 DateFormat:
   en: Date format
   uk: Формат дати
-  ru: Формат даты
 
 TimeFormat:
   en: Time format
   uk: Формат часу
-  ru: Формат времени
 
 TimeFormat12:
   en: 12h
   uk: 12-годинний
-  ru: 12-часовый
 
 AM:
   en: a.m.
   uk: д.п.
-  ru: д.п.
 
 PM:
   en: p.m.
   uk: п.п.
-  ru: п.п.
 
 TimeFormat24:
   en: 24h
   uk: 24-годинний
-  ru: 24-часовый
 
 FirstDayOfTheWeek:
   en: First day of the week
   uk: Перший день тижня
-  ru: Первый день недели
 
 Monday:
   en: Monday
   uk: понеділок
-  ru: понедельник
 
 Sunday:
   en: Sunday
   uk: неділя
-  ru: воскресенье
 
 ReminderTimeInterval:
   en: Reminder time interval
   uk: Інтервал часу нагадування
-  ru: Интервал выбора времени напоминания
 
 ReminderTimeStep:
   en: Reminder time step
   uk: Крок вибору часу нагадування
-  ru: Шаг выбора времени напоминания
 
 DefaultReminderTime:
   en: Default reminder time
   uk: Час нагадування за замовчуванням
-  ru: Время напоминания по умолчанию
 
 RememberLastUsedTime:
   en: Remember last used time
   uk: Запам'ятати час, що використовувався останнім
-  ru: Запомнить последнее использованное время
 
 DefaultList:
   en: Default list
   uk: Список за замовчуванням
-  ru: Список по умолчанию
 
 RememberLastUsedList:
   en: Remember last used list
   uk: Запам'ятовувати останній використаний список
-  ru: Запоминать последний использованный список
 
 SortListsByName:
   en: Sort lists by name
   uk: Сортувати списки за назвою
-  ru: Сортировать списки по имени
 
 PreFill:
   en: Pre-fill the form
   uk: Попередньо заповнити форму
-  ru: Предварительно заполнить форму
 
 NotifyOnSuccess:
   en: Report successfully save the task
   uk: Інформувати про успішне додавання задачі
-  ru: Информировать об успешном добавлении задачи
 
 ShowButtons:
   en: Show these buttons in the extension window
   uk: Показувати ці кнопки в вікні розширення
-  ru: Показывать эти кнопки в окне расширения
 
 RateExtension:
   en: Rate the extension
   uk: Оцінити розширення
-  ru: Оценить расширение
 
 ReportBug:
   en: Report a bug
   uk: Повідомити про помилку
-  ru: Сообщить об ошибке
 
 GetListsError:
   en: Failed to get task lists
   uk: Не вдалося отримати списки завдань
-  ru: Не удалось получить списки задач
 
 CreatedOnPage:
   en: Created on the page
   uk: Сворено на сторінці
-  ru: Создано на странице
 
 QuickAddInContextMenu:
   en: Quick add in the context menu
   uk: Швидке додавання в контекстному меню
-  ru: Быстрое добавление в контекстном меню
 
 SaveDebugInfo:
   en: Save debug info
   uk: Зберігати налагоджувальну інформацію
-  ru: Сохранять отладочную информацию
 
 ViewDebugInfo:
   en: View Debug Info
   uk: Переглянути налагоджувальну інформацію
-  ru: Посмотреть отладочную информацию
 
 Tasks:
   en: Tasks
   uk: Задачі
-  ru: Задачи
 
 FailedLoadTaskLists:
   en: Failed to load all task lists
   uk: Не вдалось завантажити всі списки задач
-  ru: Не удалось загрузить все списки задач
 
 ShowReminderDate:
   en: Show Reminder date
   uk: Показати дату нагадування
-  ru: Показать дату напоминания
 
 ShowDueDate:
   en: Show Due date
   uk: Показати дату виконання
-  ru: Показать дату выполнения
 
 DueDate:
   en: Due date
   uk: Дата виконання
-  ru: Дата выполнения
 
 UserCancelAuth:
   en: The user canceled the authentication.
   uk: Користувач скасував автентифікацію.
-  ru: Пользователь отменил аутентификацию.
 
 extIsUpdated:
   en: The extension is updated. Click here to learn about the changes.
   uk: Розширення було оновлено. Натисніть тут щоб дізнатися про зміни.
-  ru: Расширение было обновлено. Нажмите здесь чтобы узнать об изменениях.
 
 authSuccess:
   en: The account connected successfully.
   uk: Обліковий запис успішно підключено.
-  ru: Учетная запись успешно подключена.
 
 Wait:
   en: Wait...
   uk: Зачекайте...
-  ru: Подождите...

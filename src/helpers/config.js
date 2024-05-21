@@ -3,7 +3,7 @@ import storage from './storage';
 
 const CONFIG_KEY = 'cfg';
 
-const isCyrillic = currentLocale === 'uk' || currentLocale === 'ru';
+const isCyrillic = currentLocale === 'uk';
 
 const defaultConfig = {
   dateFormat: isCyrillic ? 'dd.MM.yyyy' : 'MM/dd/yyyy',

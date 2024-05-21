@@ -289,7 +289,7 @@ export default {
         : { showButtons: [] };
     },
     enTranslate() {
-      return !(currentLocale === 'uk' || currentLocale === 'ru');
+      return currentLocale !== 'uk';
     },
   },
 

@@ -6,6 +6,7 @@
 - Migration to [Microsoft Graph To Do API](https://learn.microsoft.com/en-us/graph/api/resources/todo-overview).
 - Fixed several bugs (#39, #42, #43).
 - Sort lists by name (can be changed in the settings).
+- Russian localization [follows the russian warship](https://en.wikipedia.org/wiki/Russian_warship,_go_fuck_yourself).
 
 ## v0.20.0 (2021-07-04)
 
@@ -47,7 +48,6 @@
 ## v0.19.0 (2020-09-27)
 
 - You will no longer have to enter your username and password if more than 24 hours have passed since the last use of the extension, and the browser has restarted. You can read in more detail why this was happening [here](http://bit.ly/24h-issue). Because it is impossible to use the standard browser functionality with the Microsoft API, the extension will need additional "Read your browsing history" permissions. It is necessary so that the extension can authenticate the user in a separate browser tab.
-  - [RU] Больше не придется вводить логин и пароль, если с момента последнего использования расширения прошло больше 24 часов и браузер был перезапущен. Почему так происходило подробней можно почитать [здесь](http://bit.ly/24h-issue). Из-за того, что с Microsoft API невозможно использовать штатный функционал браузера, расширению потребуется дополнительные полномочия "Читать историю просмотров". Это нужно чтобы расширение могло произвести аутентификацию пользователя в отдельной вкладке браузера.
 
 ## v0.18.0 (2020-09-21)
 
