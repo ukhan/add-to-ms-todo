@@ -110,7 +110,9 @@ module.exports = (env, argv) => {
         filename: '[name].css',
       }),
       new YamlLocalesWebpackPlugin({
-        messageAdditions: argv.beta ? { extName: ' (beta)' } : {},
+        messageAdditions: argv.beta
+          ? { extName: ' (beta)', BrowserActionTitle: ' (beta)' }
+          : {},
       }),
       new VueLoaderPlugin(),
       new webpack.ProgressPlugin(),
