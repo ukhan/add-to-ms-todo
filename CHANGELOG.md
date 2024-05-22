@@ -4,7 +4,7 @@
 
 - Migration to [MV3](https://developer.chrome.com/docs/extensions/develop/migrate/mv2-deprecation-timeline).
 - Migration to [Microsoft Graph To Do API](https://learn.microsoft.com/en-us/graph/api/resources/todo-overview).
-- Fixed several bugs (#39, #42, #43).
+- Fixed several bugs ([#39], [#42], [#43]).
 - Sort lists by name (can be changed in the settings).
 - Russian localization [follows the russian warship](https://en.wikipedia.org/wiki/Russian_warship,_go_fuck_yourself).
 
@@ -95,3 +95,7 @@
 ## A long time ago in a galaxy far, far away….
 
 What happened there can be found only by the commits.
+
+[#39]: https://github.com/ukhan/add-to-ms-todo/issues/39
+[#42]: https://github.com/ukhan/add-to-ms-todo/issues/42
+[#43]: https://github.com/ukhan/add-to-ms-todo/issues/43
