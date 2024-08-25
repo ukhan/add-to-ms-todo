@@ -280,6 +280,7 @@ export default {
           if (this.config.preFill) {
             this.task.title = this.tabInfo.title;
             this.task.description = this.getTaskDescription();
+            this.task.reminderDateTime = this.getTaskReminder();
           }
         }
       });
@@ -344,6 +345,16 @@ export default {
         : this.tabInfo.url;
     },
 
+    getTaskReminder() {
+      if (this.config.dateDefault !== '0') {
+        let dt = new Date();
+        dt.setDate(dt.getDate() + this.config.dateDefault);
+        dt.setHours(...this.config.timeDefault.split(':'));
+        return dt.toISOString();
+      }
+      return '';
+    },
+
     toggleForm(whatToDo) {
       if (whatToDo === 'clear') {
         this.clearTaskInfo();
@@ -355,11 +366,13 @@ export default {
     clearTaskInfo() {
       this.task.title = '';
       this.task.description = '';
+      this.task.reminderDateTime = '';
     },
 
     fillTaskInfo() {
       this.task.title = this.tabInfo.title;
       this.task.description = this.getTaskDescription();
+      this.task.reminderDateTime = this.getTaskReminder();
     },
 
     t,

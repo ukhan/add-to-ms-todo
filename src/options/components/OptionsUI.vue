@@ -55,16 +55,18 @@
     </el-form-item> -->
 
     <el-form-item
-      class="reminder-time-step"
+      class="default-reminder-time"
       :class="{ en: enTranslate, 'no-en': !enTranslate }"
-      :label="t('ReminderTimeStep')"
+      :label="t('DefaultReminderDate')"
     >
-      <el-select size="middle" v-model="config.timeStep">
-        <el-option key="5" label="0:05" value="0:05"></el-option>
-        <el-option key="10" label="0:10" value="0:10"></el-option>
-        <el-option key="15" label="0:15" value="0:15"></el-option>
-        <el-option key="30" label="0:30" value="0:30"></el-option>
-        <el-option key="60" label="1:00" value="1:00"></el-option>
+      <el-select size="middle" v-model="config.dateDefault">
+        <el-option key="0" :label="t('NotSet')" value="0"></el-option>
+        <el-option
+          v-for="d in 30"
+          :key="d"
+          :label="`+ ${d} ${t(d === 1 ? 'Day' : 'Days')}`"
+          :value="d"
+        ></el-option>
       </el-select>
     </el-form-item>
 
@@ -86,6 +88,20 @@
       >
         <el-switch v-model="config.useLastUsedTime"></el-switch>
       </el-tooltip>
+    </el-form-item>
+
+    <el-form-item
+      class="reminder-time-step"
+      :class="{ en: enTranslate, 'no-en': !enTranslate }"
+      :label="t('ReminderTimeStep')"
+    >
+      <el-select size="middle" v-model="config.timeStep">
+        <el-option key="5" label="0:05" value="0:05"></el-option>
+        <el-option key="10" label="0:10" value="0:10"></el-option>
+        <el-option key="15" label="0:15" value="0:15"></el-option>
+        <el-option key="30" label="0:30" value="0:30"></el-option>
+        <el-option key="60" label="1:00" value="1:00"></el-option>
+      </el-select>
     </el-form-item>
 
     <el-form-item class="default-list" :label="t('DefaultList')">

@@ -139,6 +139,22 @@ DefaultReminderTime:
   en: Default reminder time
   uk: Час нагадування за замовчуванням
 
+DefaultReminderDate:
+  en: Default reminder date
+  uk: Дата нагадування за замовчуванням
+
+NotSet:
+  en: Not set
+  uk: Не встановлено
+
+Day:
+  en: day
+  uk: день
+
+Days:
+  en: days
+  uk: дн
+
 RememberLastUsedTime:
   en: Remember last used time
   uk: Запам'ятати час, що використовувався останнім

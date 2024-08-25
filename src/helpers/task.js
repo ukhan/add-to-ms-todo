@@ -134,7 +134,15 @@ export async function quickAddTask(info) {
       : tabInfo.url;
   }
 
-  let task = { title, description };
+  let reminder = '';
+  if (config.dateDefault !== '0') {
+    let dt = new Date();
+    dt.setDate(dt.getDate() + config.dateDefault);
+    dt.setHours(...config.timeDefault.split(':'));
+    reminder = dt.toISOString();
+  }
+
+  let task = { title, description, reminder };
   if (config.listDefault) task.list = config.listDefault;
 
   return bgAddTask(access_token, task)
