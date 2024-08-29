@@ -54,6 +54,52 @@
       />
     </el-form-item> -->
 
+    <el-form-item class="default-list" :label="t('TaskTitle')">
+      <el-select size="middle" v-model="config.title">
+        <el-option key="title" label="Page title" value="title"></el-option>
+        <el-option
+          key="title+selected"
+          label="Page title + Selected text"
+          value="title+selected"
+        ></el-option>
+        <el-option
+          key="selected+title"
+          label="Selected text + Page title"
+          value="selected+title"
+        ></el-option>
+      </el-select>
+    </el-form-item>
+
+    <el-form-item class="default-list" :label="t('TaskDescription')">
+      <el-select size="middle" v-model="config.description">
+        <el-option key="url" label="URL only" value="url"></el-option>
+        <el-option
+          key="selected"
+          label="Selected text + URL"
+          value="selected"
+        ></el-option>
+        <el-option
+          key="title"
+          label="Page title + URL"
+          value="title"
+        ></el-option>
+        <el-option
+          key="title+selected"
+          label="Page title + Selected text + URL"
+          value="title+selected"
+        ></el-option>
+        <el-option
+          key="selected+title"
+          label="Selected text + Page title + URL"
+          value="selected+title"
+        ></el-option>
+      </el-select>
+    </el-form-item>
+
+    <el-form-item class="default-list" :label="t('Delimiter')">
+      <el-input class="delimiter" v-model="config.delimiter"></el-input>
+    </el-form-item>
+
     <el-form-item
       class="default-reminder-time"
       :class="{ en: enTranslate, 'no-en': !enTranslate }"
@@ -213,6 +259,10 @@
 .default-reminder-time.en label,
 .default-list label {
   padding-top: 8px;
+}
+.delimiter {
+  width: 140px;
+  padding-left: 10px;
 }
 .reminder-time-step .el-select {
   width: 140px;

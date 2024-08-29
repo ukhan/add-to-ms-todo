@@ -1,5 +1,11 @@
 # Release Notes
 
+## v0.22.0 (2024-08-29)
+
+- Default reminder date.
+- Settings for task title and description (selected text in task title).
+- Fixed Quick Add for link context menu.
+
 ## v0.21.0 (2024-05-21)
 
 - Migration to [MV3](https://developer.chrome.com/docs/extensions/develop/migrate/mv2-deprecation-timeline).

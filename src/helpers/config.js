@@ -8,6 +8,9 @@ const isCyrillic = currentLocale === 'uk';
 const defaultConfig = {
   dateFormat: isCyrillic ? 'dd.MM.yyyy' : 'MM/dd/yyyy',
   timeFormat: isCyrillic ? '24h' : '12h',
+  title: 'title',
+  description: 'selected',
+  delimiter: '–',
   dateDefault: '0',
   timeDefault: '10:00',
   timeStart: '00:00',

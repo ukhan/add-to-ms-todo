@@ -127,6 +127,18 @@ Sunday:
   en: Sunday
   uk: неділя
 
+TaskTitle:
+  en: Task title
+  uk: Назва задачі
+
+TaskDescription:
+  en: Task description
+  uk: Опис задачі
+
+Delimiter:
+  en: Delimiter
+  uk: Розділювач
+
 ReminderTimeInterval:
   en: Reminder time interval
   uk: Інтервал часу нагадування

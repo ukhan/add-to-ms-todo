@@ -114,6 +114,47 @@ export async function bgGetFolders(access_token) {
   return folders;
 }
 
+export function getTaskTitle(title, selected, config) {
+  let taskTitle;
+  selected = selected.trim();
+
+  switch (config.title) {
+    case 'title+selected':
+      taskTitle = title + (selected ? ` ${config.delimiter} ${selected}` : '');
+      break;
+    case 'selected+title':
+      taskTitle = (selected ? `${selected} ${config.delimiter} ` : '') + title;
+      break;
+    default:
+      taskTitle = title;
+      break;
+  }
+
+  return taskTitle;
+}
+
+export function getTaskDescription(title, selected, config) {
+  let taskDescription;
+  switch (config.description) {
+    case 'title+selected':
+      taskDescription =
+        title + (selected ? ` ${config.delimiter} ${selected}` : '');
+      break;
+    case 'selected+title':
+      taskDescription =
+        (selected ? `${selected} ${config.delimiter} ` : '') + title;
+      break;
+    case 'selected':
+      taskDescription = selected;
+      break;
+    default:
+      taskDescription = '';
+      break;
+  }
+
+  return taskDescription;
+}
+
 export async function quickAddTask(info) {
   let config = await getConfig();
   let access_token = await getToken(false, true);
@@ -128,10 +169,10 @@ export async function quickAddTask(info) {
     title = linkTitle || tabInfo.title;
     description = `${linkUrl}\n\n*** ${pageInfoTitle} ***\n${tabInfo.title}\n${tabInfo.url}`;
   } else {
-    title = tabInfo.title;
-    description = tabInfo.selected.trim().length
-      ? `${tabInfo.selected}\n\n${tabInfo.url}`
-      : tabInfo.url;
+    let selected = tabInfo.selected.trim();
+    title = getTaskTitle(tabInfo.title, selected, config);
+    description = getTaskDescription(tabInfo.title, selected, config);
+    description = (description ? `${description}\n\n` : '') + tabInfo.url;
   }
 
   let reminder = '';

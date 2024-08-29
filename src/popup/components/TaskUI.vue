@@ -165,7 +165,7 @@
 const debounce = require('lodash.debounce');
 
 import { logout } from '@/helpers/auth';
-import { addTask } from '@/helpers/task';
+import { getTaskTitle, getTaskDescription, addTask } from '@/helpers/task';
 import { t } from '@/helpers/i18n';
 import { notification, closeNotification } from '@/helpers/notification';
 import getTabInfo from '@/helpers/tab';
@@ -278,7 +278,7 @@ export default {
           this.task = data.task;
         } else {
           if (this.config.preFill) {
-            this.task.title = this.tabInfo.title;
+            this.task.title = this.getTaskTitle();
             this.task.description = this.getTaskDescription();
             this.task.reminderDateTime = this.getTaskReminder();
           }
@@ -339,10 +339,24 @@ export default {
         });
     },
 
+    getTaskTitle() {
+      return getTaskTitle(
+        this.tabInfo.title,
+        this.tabInfo.selected,
+        this.config
+      );
+    },
+
     getTaskDescription() {
-      return this.tabInfo.selected.trim().length
-        ? `${this.tabInfo.selected}\n\n${this.tabInfo.url}`
-        : this.tabInfo.url;
+      let description = getTaskDescription(
+        this.task.title,
+        this.tabInfo.selected,
+        this.config
+      );
+      description =
+        (description ? `${description}\n\n` : '') + this.tabInfo.url;
+
+      return description;
     },
 
     getTaskReminder() {
@@ -370,7 +384,7 @@ export default {
     },
 
     fillTaskInfo() {
-      this.task.title = this.tabInfo.title;
+      this.task.title = this.getTaskTitle();
       this.task.description = this.getTaskDescription();
       this.task.reminderDateTime = this.getTaskReminder();
     },
